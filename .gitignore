@@ -1,0 +1,12 @@
+# Dependencies
+client/node_modules/
+client/.next/
+client/.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
