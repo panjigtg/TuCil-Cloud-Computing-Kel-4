@@ -1,0 +1,111 @@
+openapi: 3.0.3
+info:
+  title: Dynamic QR Presence System API
+  description: API documentation for the Dynamic QR Presence System running on Google Apps Script (GAS). This service leverages a singular Base URL `/exec`, passing routing instructions via the `path` query parameter.
+  version: 1.0.0
+servers:
+  - url: https://script.google.com/macros/s/{SCRIPT_ID}/exec
+    description: Google Apps Script Web App Deployment URL
+    variables:
+      SCRIPT_ID:
+        default: "AKfycby..."
+        description: Replace with your actual deployed script ID.
+paths:
+  /:
+    get:
+      summary: Get Status / Routing based on `path` parameter
+      description: Single endpoint for all GET requests routed via `?path=`.
+      operationId: executeGet
+      parameters:
+        - in: query
+          name: path
+          schema:
+            type: string
+          required: true
+          description: Internal route path. Eg. `presence/status`, `sensor/gps/marker`, `sensor/gps/polyline`, or `ui`.
+        - in: query
+          name: user_id
+          schema:
+            type: string
+          description: Required if `path` = `presence/status`.
+        - in: query
+          name: course_id
+          schema:
+            type: string
+          description: Required if `path` = `presence/status`.
+        - in: query
+          name: session_id
+          schema:
+            type: string
+          description: Required if `path` = `presence/status`.
+        - in: query
+          name: device_id
+          schema:
+            type: string
+          description: Required if `path` = `sensor/gps/marker` or `sensor/gps/polyline`.
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date-time
+          description: Required if `path` = `sensor/gps/polyline`. ISO-8601 string.
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date-time
+          description: Required if `path` = `sensor/gps/polyline`. ISO-8601 string.
+      responses:
+        "200":
+          description: Successful response format depends on the nested path logic. Common wrapper `{ ok: true, data: {} }`.
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/SuccessResponse'
+            text/html:
+              description: If `path=ui`.
+    post:
+      summary: Post Data based on `path` parameter
+      description: Single endpoint for all POST requests routed via `?path=`.
+      operationId: executePost
+      parameters:
+        - in: query
+          name: path
+          schema:
+            type: string
+          required: true
+          description: Internal route path. Eg. `presence/qr/generate`, `presence/checkin`, `sensor/accel/batch`, or `sensor/gps`.
+      requestBody:
+        description: Send appropriate JSON structure depending on the `path`.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: GAS Web Apps always return HTTP 200 via `ContentService`. Check the `ok` property.
+          content:
+            application/json:
+               schema:
+                 $ref: '#/components/schemas/SuccessResponse'
+components:
+  schemas:
+    SuccessResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          example: true
+        data:
+          type: object
+          description: Payload containing requested data or status.
+    ErrorResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "token_invalid"

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <title>Dashboard Presensi</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 2rem; background: #f4f4f9; }
+    .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
+    button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 20px; }
+    button:hover { background: #0056b3; }
+    #qr-container { margin-top: 20px; display: flex; justify-content: center; min-height: 200px; align-items: center; }
+    .status { margin-top: 15px; font-weight: bold; color: #333; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Generate QR Presensi</h2>
+    <p>Course: <strong>Cloud-101</strong> | Sesi: <strong>02</strong></p>
+    
+    <div id="qr-container">
+      <span id="placeholder">Klik tombol di bawah untuk generate QR</span>
+    </div>
+    
+    <div id="status-text" class="status"></div>
+    
+    <button onclick="generateQR()">Generate QR Baru</button>
+  </div>
+
+  <script>
+    let qrcode = null;
+
+    function generateQR() {
+      document.getElementById('placeholder').style.display = 'none';
+      document.getElementById('status-text').innerText = 'Generating token...';
+      
+      const payload = {
+        course_id: "cloud-101",
+        session_id: "sesi-02",
+        ts: new Date().toISOString()
+      };
+
+      // Memanggil fungsi server GAS menggunakan google.script.run
+      // Ini membutuhkan fungsi 'processGenerateQR' di Code.gs
+      google.script.run
+        .withSuccessHandler(onSuccess)
+        .withFailureHandler(onError)
+        .processGenerateQR(payload); 
+    }
+
+    function onSuccess(response) {
+      if(response.ok) {
+        document.getElementById('status-text').innerText = 'Token: ' + response.data.qr_token + '\nBerakhir: ' + new Date(response.data.expires_at).toLocaleTimeString();
+        
+        // Hapus QR lama jika ada
+        document.getElementById('qr-container').innerHTML = '';
+        
+        // Render QR baru
+        qrcode = new QRCode(document.getElementById("qr-container"), {
+          text: response.data.qr_token,
+          width: 200,
+          height: 200,
+          colorDark : "#000000",
+          colorLight : "#ffffff",
+          correctLevel : QRCode.CorrectLevel.H
+        });
+      } else {
+        document.getElementById('status-text').innerText = 'Error: ' + response.error;
+      }
+    }
+
+    function onError(error) {
+      document.getElementById('status-text').innerText = 'Terjadi kesalahan jaringan!';
+      console.error(error);
+    }
+  </script>
+</body>
+</html>
