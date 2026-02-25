@@ -1,0 +1,785 @@
+{
+  "info": {
+    "_postman_id": "2a4c1805-7c65-46ce-980d-5bde841adc9c",
+    "name": "cloud presence collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "check in",
+      "item": [
+        {
+          "name": "Check In",
+          "id": "b72dca03-2ef4-425e-b908-af8e5b1a3a27",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"user_id\": \"USER-123\",\r\n  \"device_id\": \"DEVICE-ABC\",\r\n  \"course_id\": \"COURSE-001\",\r\n  \"session_id\": \"SESSION-001\",\r\n  \"qr_token\": \"TKN-E68708\",\r\n  \"ts\": \"2024-02-25T10:01:00.000Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}?path=presence/checkin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "path",
+                  "value": "presence/checkin",
+                  "uuid": "883f359b-c5d5-4b67-9fc5-02edafc46a96"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "1b93098c-4e95-4b29-b49f-305f4bc26103",
+              "name": "token used",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"user_id\": \"USER-123\",\r\n  \"device_id\": \"DEVICE-ABC\",\r\n  \"course_id\": \"COURSE-001\",\r\n  \"session_id\": \"SESSION-001\",\r\n  \"qr_token\": \"TKN-E68708\",\r\n  \"ts\": \"2024-02-25T10:01:00.000Z\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}?path=presence/checkin",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "presence/checkin",
+                      "uuid": "883f359b-c5d5-4b67-9fc5-02edafc46a96"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Expires",
+                  "value": "Mon, 01 Jan 1990 00:00:00 GMT"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 25 Feb 2026 08:01:22 GMT"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "Reporting-Endpoints",
+                  "value": "default=\"/macros/web-reports?bl=editors.maestro_20260217.02_p3&context=eJwVzGtU1GUCB2D9z_v-yJaLDo5cCsFBafBCQAe0mGGchuGiCaKtxdH0eAg3QgPBFF1rAZMTrLHrWnhSk8sMyApNaheRSk-kmbR7xEtlpsYiDHIZBgW5JAv72w_P1-fxAa_4-b1KMvXf7FUm6NC-B8pxWtD-QHmG5NODigd9vWxQuUB1BQ-VE2Qseqgk0O2sEaWTvO0jSjDd148qY9RqGFVu0N82jSoH6Q9_HVW8aXPfqLKb9m8YU6oopGVMCaPC1jGlhJoqf1ea6em3xhUjNU1OKM3kHjCpzKQnd04qc-mDHVNUNeSqVFQjdOq8omqi7NUq1Q5aXahSraWhYpVqnG7aVKo7_9epUjno5jShaqdK13Oijr7Sx4jU1Bhx4HyMsNJPZXrhoFMH9aKJ9jfoxYc0T2sQUeS-xCBmUvJSgzDGGcSZgFhxiRaPxIoEOpFoEo1kWm4SSeSz-3kRSIU5ZlFCO7abxV_oVLVZfEtHPzGLWtr6uVnspKjyOGGhYwss4hOan2YRMXQv0yIGaMVWi_gj5Zy1iHxKdFjESqqLihcn6NpIgviVyrISRTkN_ZQoxM-J4rI6SfxM-W7LRAH1rqqQg5SSWSFfIvWeChlMT9ES0jVWyHBa3Vgp0ylqqFIaaM6eKhlBiSnVciVdvGCVl-nkLas8Q_92WeWPlJBp422TRZttspR8y2xSR2s6bHI9iZM10p38kmvlHPpPYa28Tz5f18pAitp7TBrodt8x6aT7NNV5TPrTfKoJrJMf08iKOumWXCcH0urkKJV2H5f_oA97jssq8llULwPJklwvV9C8_HoZTa1v1csblFDaIFPoULpdVlPyG3a5hrq290gXhdh7ZBg51L1ymPLaeuU79L6xTx6h-uY--Sntfdkp36ODh5yygvbWOGU57V7nkvvIp9MdgaSb7oFwmjjtATR64OoPHrhLSb6eSKO4LzzxIkWe88RzlH7BE1n0bIUXTHS2Zjq-o7unZqCXDoSrcZjsyWqcpTV2NdZTqtYbaXRrsTc66OJGb1ymx2_PhJq-marBFQpRaRBNa5M1SKeCnRq8S2_v0qCYEoo1SKG7lzQYJNmigYZ0tISKqZzOXdfgMumWz8IS-q1qFroo_dYsZFF7lg966M6kDxxUsskX--k1uy9yKKjFl6cvXqzywzoar_aDsPpB2v2gIQ9ffwRQTKk_zJQ66o80evLvT2AuzWiYjSmu2XiM7J8F4gta7BYEI1leD8LRxiDU0g_WObhGbf1zcI-GwrQYp9A3tYigvGIt_kyBJVo8RYMVWjwizYQWAfSxPhif03hsMIQxGF3Xg-GirfVz0UouGqHil0JQRlkvhyCP3oEO--h1Tx1yKXqhDrGUXq1DFvU4dHhAbV6huEetM0JxgzJmhmILBWtCsYDcGmLgRZML9fBapMfBZD0q6PAUA6wUVG6AjprmGtFM561GXKdSmxGH6NGkEaopSyEWLYU7HT6_FFaKmGfCs1RoNqGEln1kwirKbzGhgDZeMSGTAnpMmEdv-zyPMnpvsxkfUGi-GRH0qNcMVZ8Zfxo2I5s618bBSZf643CFMndbsJWKXBYcoFx1PHbRbwXx6KIjtnjYaPxiPMT38Ti5LQFnaH1DAjaRvz0BWvoyLBHfUk5dIvLJuy0RT9CCoCTE0K7SdhRR88oOtNDqVR1YS2-MdWA7TRY44FbowLpmB16lTts9OCnOvRsv0Om2bpyjX_b0oJu29PXgTYpW9yKWQvJ7EUa_GPvQTZ2n--Cko819qKWxcCemRThRlOFEKU019GMaffOpC5fo6isDuEnXcgfwK-VODKCI6vQPcIK6UgfhoqsHBtFODzOG8F_q_OdDOGlN0jA20eEXhmGlCynD-JH2LR_FEepuHcUY3Vk4jn5Suz929cbv_8L07x1fFin-wpL-WrZ2dsarmduyc_PCtmzMyNuWm70hMjwyOjwyYnFYeOSGnGf-B4wbBdc&build-label=editors.maestro_20260217.02_p3&is-cached-offline=false\""
+                },
+                {
+                  "key": "Document-Policy",
+                  "value": "include-js-call-stacks-in-crash-reports"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "frame-ancestors 'self'"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Server",
+                  "value": "GSE"
+                },
+                {
+                  "key": "Alt-Svc",
+                  "value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2026-02-25T08:04:24.981Z",
+              "body": "{\n    \"ok\": false,\n    \"error\": \"token_already_used\"\n}"
+            },
+            {
+              "id": "e28728b5-a74a-43a0-8c79-5b347de65c53",
+              "name": "valid",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"user_id\": \"USER-123\",\r\n  \"device_id\": \"DEVICE-ABC\",\r\n  \"course_id\": \"REQUESTED\",\r\n  \"session_id\": \"REQUESTED\",\r\n  \"qr_token\": \"TKN-8A18BD\",\r\n  \"ts\": \"REQUESTED\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}?path=presence/checkin",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "presence/checkin",
+                      "uuid": "883f359b-c5d5-4b67-9fc5-02edafc46a96"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Expires",
+                  "value": "Mon, 01 Jan 1990 00:00:00 GMT"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 25 Feb 2026 09:30:06 GMT"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "Reporting-Endpoints",
+                  "value": "default=\"/macros/web-reports?bl=editors.maestro_20260217.02_p3&context=eJwVzGtU0-cBB2D9531_1JaLBiOXFsGgNHihQA9oyyWmIRC0gmhny9Hp8VBcKVoQrKKzHWDlDEbZOlc8UyeXBMzEpkrXimzVU6pz0u2Il7bWqmXIRSAhKAhhMthvH56vz9OdPsmLB5U0Gro9qEzRkcpHykla0vVIeZHkCyOKF325akS5RLbix8pp0pc-VlLobu640kO-9nEllB7Gu5UJ6khwK7fot9vcymF65jduxZe2O9zKfvpoy4RSR2HtE0oElXRMKOXUWvsfpY1eeG9S0VPr9JTSRp5B08pcem7vtLKQPt4zQ9VArlpFNU7NFxVVK-WtV6n20PoSlWojjZapVJN026pS3fu_HpWql27PEqouqnW9LGz0t_g4kZERJw5djBMW-q4qXvRS8-F40UqLtAkihjxXJIi5dC4oUVyh5eOJIoVOmw2ihQyrDSKV_Pa_IoKpJN8oymnPbqP4FTXXG8XXdPxTo2iknZ8bxV6KqU4SJjqxxCQ-pcWZJhFHD3JMYpjW7DSJn1H-eZMoInOvSawlW0yyOE03xlPEj1SVaxbVNPqdWYjvzeKqOlV8T0Ueq0QxDa6rkSOUnlMjXyf1gRoZSs_TCtK11MhIWt9SK7MoZrRWJtCCA3Uyiszp9XItXb5kkVfpzB2LPEf_clnkt5SSY-VtlaXbrbKC_KusUkcbuq1yM4kzDdKTAtIa5QL6d0mjfEh-XzbKYIo5eEIm0F3HCemkhzTTeUIG0mJqCLbJT2h8jU16pNnkcKZNuqmi_6T8Pf1x4KSsI79lTTKYTGlNcg0tKmqSsdTxXpO8RSkVp2Q6Hcmyy3pKe8cuN1Df7gHpojD7gIygXvWgHKPCzkH5Af1B75DHqKnNIT-jg2845Yd0-IhT1tDBBqespv2bXLKS_Ho8EUy62V6IpKmzXkCLF65_44X7lOrvjUxK-sIbr1H0BW-8TFmXvJFLL9X4wEDnG2bj73S_eQ4G6VCkGkfJnqbGedpgV2MzZWh9kUl3lvuimy5v9cVVevruXKjpq5kaXKMwlQaxtDFNgywq3qvBr-n9fRqUUUqZBul0_4oGIyTbNdCQjlZQGVXThZsaXCXd6nlYQT_VzUMfZd2Zh1zqyvXDAN2b9kMvlW_zx0f0lt0f-RTS7s_TH6_VBWATTdYHQFgCIO0B0JCXfyCCKK4iEEbKcAcik5773bNYSHNOzccM13w8Rfa_BOMLWu4RAj2Z3g7B8ZYQNNI3lgW4QZ1DC_CARiO0mKTwd7WIosIyLX5JweVaPE8jNVo8Ic2UFkH0SXwoPqfJxFAIfSj6bobCRTubFqKDXDROZa-HoYpy3whDIX0AHSrpbW8dCih2qQ6JlFWvQy4N9OrwiDp9wvGAOuaE4xZlzw3HDgrVhGMJeZyKgw9NL42Hz7J4HE6LRw0dnZEAC4VUJ0BHrQv1aKOLFj1uUoVVjyP0ZFoP1YyVEMtWwpOOXlwJC0UtMuAlKjEaUE6r_mTAOipqN6CYtl4zIIeCBgxYRO_7vYIq-nC7ER9TeJERUfRk0AiVw4hfjBmRRz0bk-CkK0NJuEY5-03YSaUuEw5RgToZ--in4mT00TFrMqw0eTkZ4h_JOLMrBedo86kUbKNAewq09NcIM76mfJsZReTbacaztCQkFXG0r6ILpdS2thvttH5dNzbSOxPd2E3Txb3wKOnFprZevEk91gdwUpJnP16ls539uEA_HBhAP-1wDOBdilUPIpHCigYRQT_oHeinnrMOOOl4mwONNBHpxKwoJ0qznaigmQlDmEVffebCFbr-82HcphsFw_iRCqaGUUq2-Ec4TX0ZI3DR9UMj6KLH2aP4L_X8-TGctCF1DNvo6KtjsNCl9DF8S5Wr3ThG_R1uTNC9pZMYIvUzTx0vffJPzG5prtwdKExZb-Vp52e_mbMrr6AwYsfW7MJdBXlboiOjYyOjo5ZHREZvyX_xf-RNACc&build-label=editors.maestro_20260217.02_p3&is-cached-offline=false\""
+                },
+                {
+                  "key": "Document-Policy",
+                  "value": "include-js-call-stacks-in-crash-reports"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "frame-ancestors 'self'"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Server",
+                  "value": "GSE"
+                },
+                {
+                  "key": "Alt-Svc",
+                  "value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2026-02-25T09:30:12.143Z",
+              "body": "{\n    \"ok\": true,\n    \"data\": {\n        \"presence_id\": \"PR-A88DF8BE\",\n        \"status\": \"checked_in\"\n    }\n}"
+            },
+            {
+              "id": "089af003-f8ca-4fa7-aabe-7036291fd806",
+              "name": "invalid token",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "name": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"user_id\": \"USER-123\",\r\n  \"device_id\": \"DEVICE-ABC\",\r\n  \"course_id\": \"REQUESTED\",\r\n  \"session_id\": \"REQUESTED\",\r\n  \"qr_token\": \"TKN-8A18B9\",\r\n  \"ts\": \"REQUESTED\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}?path=presence/checkin",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "presence/checkin",
+                      "uuid": "883f359b-c5d5-4b67-9fc5-02edafc46a96"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Expires",
+                  "value": "Mon, 01 Jan 1990 00:00:00 GMT"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 25 Feb 2026 12:11:44 GMT"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "Reporting-Endpoints",
+                  "value": "default=\"/macros/web-reports?bl=editors.maestro_20260217.02_p5&context=eJwVzH9Y1PUBB3D83ufzJhugHZ78MAQPxUOTgD2gxY_zOo47NEG0LB5NHx_CRWggmKKzBpg8gxmbs3BTJ8gdeAu61FYilT6RZtI28cfMTI0hP-THcSgIx2Sw9_54_ft60j0teUGfkkoDt_qUCTq076HyES1sf6j8kuSzQ4o3fbVsSLlA9qJHygnSlzxSzHQnZ1TpJF_HqBJKD-Ldyhi1JriVm_T7TW7lIP3id27Flzb3u5XdtH_DmHKMwlrGlAgqbh1Tyqip-j9KMz37zriip6bJCaWZvIImlRn09M5JZS59uMNDVUuuakU1SqfOK6omyl2tUu2g1cUq1VoaLlWpxumWTaW6-3-dKlUX3ZoqVO1U7Xpe2OnL-DiRnh4nDpyPE1a6UREvuujUwXjRRPsb4sWfaZ42QcSQ15IEMYPOBCWKS7R4NFGY6YTFIBrJsNwgUshv9wsimIrzjKKMdmw3it_QqRqj-IaOfmIUdbT1M6PYSTGVScJExxeaxCe0IMMk4uh-tkkM0oqtJvEy5Z01iUKydJnESrLHJIsTdG3ULH6iihyLqKThGxYhfrCIy-oU8QMVei4TRdS3qkoOUVp2lXyF1HuqZCjNpyWka6ySkbS6sVpmUsxwtUygOXuOySiypNXIlXTxglVeppO3rfIM_cNllf8ic7aNt02WbLbJcvKvsEkdremwyfUkTtZKLwpIrZNz6N_FdfIB-X1VJ4MpZu9xmUB3-o9LJz2gKc7jMpAWUG2wXX5Moyvs0jPVLgcz7NJN5T0fyT-S36J6GUym1Hq5guYV1stYan2nXt4kc3mDTKMP5jvkETqU6ZA1lPqWQ66h7u290kVhjl4ZQV3qPjlCBW198j36QN8vj1B9c7_8lPa-6pTv08FDTllFe2udspJ2r3PJfeTX6YVg0k33RiRNnPYGGr1x9Xtv3KMUfx9kUNLnPniJos_54HnKvOCDHHquahoMdLZ2Or6le6eeQh8diFTjMDlS1ThLaxxqrKd0rS8yyLTYFyvoNnXQxY2-uExP3pkBNX09RYMrFKbSIJbWpmqQSUU7NfgtvbtLg1Iyl2qQRvcuaTBEskUDDeloCZVSJZ27rsFl0i2fiSX087GZ6KbM2zORQ-05fuilu5N-6KKyTf7YT284_JFHIS3-PP3x0rEArKPxmgAIawCkIwAa8vYPRBDFlQfCSOnuQGTQ03-Yhbk0q2E2PFyz8QQ5_haMz2mxZwj0lPZmCI42hqCOvrfOwTVqG5iD-zQcocU4hb-tRRQVlGrxawou02I-DVVp8Zg0E1oE0cfxofiMxhNDIfSh6L4eChdtrZ-LVnLRKJW-EoYKynk1DAW0UeqQTe9Bh330po8O-RT7jA6JlFmjQw71dunwkNqmheM-tT4VjpuUNSMcWyhUE46F5NkQh2nksSge0-lgajyq6LBHAqwUUpkAHTXN1aOZzlv1uE7lNj0O0eNJPVQeSyEWLYUXHT6_FFaKmmfAc1RsNKCMlv3FgFVU2GJAEW28YkA2BfUaMI_e9XsBFfT-ZiM-pPBCI6LocZ8Rqn4jfjViRC51rk2Cky4NJOEKZe82YSuVuEw4QPnqZOyin4uS0U1HbMmw0fjFZIjvknFymxlnaH2DGZso0GGGlr6IsOAbyrNbUEi-bRbMooUhKYijXeXtKKHmlR1oodWrOrCW3hrrwHaaLOqCZ3EX1jV34XXqtN2Hk5K8evAinW7rwTn6cU8vemhLfy_eplh1HxIprLAPEfSjvh891Hm6H0462tyPOhqLdGJqlBMlWU6U05SEAUylrz914RJdfW0Qt-ha_iB-ovyJQZSQPf4hTlB3-hBcdPXAENrpUdYw_kudf30EJ72cMoIsOvziCKz0bdoIbtC-5W4coZ5WN8bo7jPjGCC11xNF_3z8d0z_05V7d6YEClPmG7na2VmvZ2_LzS-I2LIxq2Bbfu6G6Mjo2MjoqMURkdEb8mL-B51XBCE&build-label=editors.maestro_20260217.02_p5&is-cached-offline=false\""
+                },
+                {
+                  "key": "Document-Policy",
+                  "value": "include-js-call-stacks-in-crash-reports"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "frame-ancestors 'self'"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Server",
+                  "value": "GSE"
+                },
+                {
+                  "key": "Alt-Svc",
+                  "value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2026-02-25T12:12:21.804Z",
+              "body": "{\n    \"ok\": false,\n    \"error\": \"token_invalid\"\n}"
+            }
+          ]
+        }
+      ],
+      "id": "a1a39228-53af-45c8-b228-8879c3f20997"
+    },
+    {
+      "name": "generate",
+      "item": [
+        {
+          "name": "Generate Qr",
+          "id": "3fda94c4-a571-4721-8dc0-cf283dc42d99",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text",
+                "uuid": "bcec390c-d1b9-4c8c-962a-2fc4dd9896de"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}presence/qr/generate",
+              "host": [
+                "{{baseUrl}}presence"
+              ],
+              "path": [
+                "qr",
+                "generate"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f019f40d-d3d3-443a-ab45-b02c84bb29c0",
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text",
+                    "uuid": "bcec390c-d1b9-4c8c-962a-2fc4dd9896de"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"course_id\": \"REQUESTED\",\r\n  \"session_id\": \"REQUESTED\",\r\n  \"ts\": \"REQUESTED\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}?path=presence/qr/generate",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "presence/qr/generate",
+                      "uuid": "a5f172f6-3a03-4b49-ab20-e299649d14b0"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Expires",
+                  "value": "Mon, 01 Jan 1990 00:00:00 GMT"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 25 Feb 2026 09:27:54 GMT"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "Reporting-Endpoints",
+                  "value": "default=\"/macros/web-reports?bl=editors.maestro_20260217.02_p5&context=eJwVzGtU1GUCB2D9z_v-yJaLDY5cDMFBafBCwB7Q4jJOw3DRBNFy42B6PIQboYFgiq61gMkJUtqWwnPQBBnAWaFJbUtkS0-kudLuAS9rZmoschFmhkFBLisL-9sPz9fn6SGP-MU2JZkGb9uUKao6-Eg5SUu6Him_Jfn8sOJG364aVi6RpfCxcor0xY-VBLqbPab0kKd1TAmkh9HjygR1xIwrt-ijrePKYfrNh-OKJ22zjyv76OPNE8pxCmqbUEKoqGNCKaWWmv8orfT8u5OKnlqmp5RWcvWbVubQs3umlYX06e4Zqnpy1iiqMTpzUVG1UM56lWo3rS9SqdJppESlmqTbdSrVvf_rUal66fYsoeqiGueLwkLfREeJ1NQoUXExSpjpZnm06KUzh6NFCy3SxogIcl0RI-bQOb9YcYWWj8WKBDqVaBDNZFhtEEnkte8l4U9FuUZRSrt3GcUf6UytUXxPx74wigba8ZVR7KGIyjhhohNLTOILWpxmElH0IMskhmjNDpN4lXLPm0QBJfaaxFqyRMSLU3R9LEH8QuXZiaKSRm4mCvFTomhXJ4mfqMBllSgk27pqOUymrGq5htT7q2UgPUcrSNdcLUNpfXONzKCIkRoZQwv2H5dhlJhSK9fS5Utm2U6n75jlOfqn0yz_RQlZdTKFirfVyTLyLq-TOtrQXSc3kThdL13JJ7lBLqB_FzXIh-T1bYP0p4gDJ2QM3bWfkA56SDMdJ6QvLaZ6f4v8nMbWWKRLskUOpVnkOOU1WeReKus_Kf9M5oGTspG8ljVKfzIlN8o1tKigUUZSx7uN8hYllDXJFKrKsMpaSn7bKjdQ364B6aQg64AMoV61TY5SfqdNvk-f6O3yKDW22uWXdOA1hzxEh6scspoO1DtkJe3b6JQHyavHFf6km-2GUJo66wY0u-Haj264T0ne7kijuK_d8QqFX3DHi5RxyR3Z9EK1Bwx0vn42fqD7Z56BjSpC1ThC1mQ1ztMGqxqbKFXriTS6s9wT3XR5iyfa6em7c6Cm72ZqcJWCVBpEUnqyBhlUuEeDD-i9vRqUUEKJBil0_4oGwyTbNNCQjlZQCVXShRsatJNu9VysoF-Pz0UfZdyZi2zqyvbCAN2b9kIvlW71xsf0ptUbuRTQ5s3TG68c98FGmqz1gTD7QFp9oCE3b1_4UVSZL4yUOu6LNHr2T_OwkOY1zccM53w8Rda_-uNrWu4SAD2lvBWAY80BaKAfzQtwnToHF-ABjYRoMUnB72gRRvklWvyB_Eu1eI6Gq7V4QpopLfzo8-hAfEWTsYEQ-kD03QiEk3Y0LkQHOWmMSn4XhHLKfi0I-fQ-dDhIb7nrkEeRS3WIpYxaHbJpoFeHR9TpEYwH1PFMMG5R5pxgbKdATTCWkEtTFDxoemk0PJZF43ByNKrpyIwYmCmgMgY6Si-NRQa1LNSjlS6a9bhBZXV6VNGTaT1UM1ZCLFsJVzpycSXMFLbIgBeoyGhAKa36zIB1VNBmQCFtuWpAFvkNGLCI3vN6CeV0aJsRn1JwgRFh9MRmhMpuxO9HjcihnvQ4OOjKYByuUtY-E3ZQsdOECspTx2Mv_VoYjz46WhePOpq8HA_x93ic3pmAc7SpKQFbydeaAC39LSQR31OuJREF5NmZiHm0JCAJUbS3rAvF1Lq2G220fl030untiW7sounCXrgU9WJjay_eoJ66B3BQnGs_Xqaznf24QD_vH0A_bbcP4B2KVNsQS0EFNoTQz3o7-qnnrB0OOtZqRwNNhDowK8yB4kwHymhmzCBm0XdfOnGFrr0-hNt0PW8Iv1De1BCKyRL9CKeoL3UYTrpWMYwuepw5gv9Sz18ew0GvJo0ik468PAoz_ZAyipt0cPU4jlJ_xzgm6N7SSQyS2vWpqqIn_8DszvZDFYqvMGW8maOdn_lG1s6cvPyQ7Vsy83fm5WwODw2PDA0PWx4SGr45N-J_kT4GpA&build-label=editors.maestro_20260217.02_p5&is-cached-offline=false\""
+                },
+                {
+                  "key": "Document-Policy",
+                  "value": "include-js-call-stacks-in-crash-reports"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "frame-ancestors 'self'"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Server",
+                  "value": "GSE"
+                },
+                {
+                  "key": "Alt-Svc",
+                  "value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2026-02-25T09:28:02.660Z",
+              "body": "{\n    \"ok\": true,\n    \"data\": {\n        \"qr_token\": \"TKN-BB165D\",\n        \"expires_at\": \"2026-02-25T09:29:51.030Z\"\n    }\n}"
+            }
+          ]
+        }
+      ],
+      "id": "ffedd216-afd5-4aba-b1cc-21df421a6cf3"
+    },
+    {
+      "name": "presence status",
+      "item": [
+        {
+          "name": "get status",
+          "id": "79726f0a-abaa-4fe8-8ac8-3353940e33b5",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": [
+            {
+              "id": "28a3d030-5bc9-42c1-984f-0ab432cb238d",
+              "name": "valid",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}?path=presence/status&user_id=USER-123&course_id=COURSE-001&session_id=SESSION-001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "presence/status"
+                    },
+                    {
+                      "key": "user_id",
+                      "value": "USER-123"
+                    },
+                    {
+                      "key": "course_id",
+                      "value": "COURSE-001"
+                    },
+                    {
+                      "key": "session_id",
+                      "value": "SESSION-001"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Expires",
+                  "value": "Mon, 01 Jan 1990 00:00:00 GMT"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 25 Feb 2026 12:14:16 GMT"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "Reporting-Endpoints",
+                  "value": "default=\"/macros/web-reports?bl=editors.maestro_20260217.02_p5&context=eJwVzGtU0-cBB2D9531_1I6LDUYuFsGgNHihwA5oSyCmISRoBdHOlaPT46G4UrQgWEVnO8DKKcyyda64qZNLADOxqdq1Ilt1pVonXQ94mbVWLUMuQghBQS6VwX778Hx9nm73SVroVFJo4LZTmaTDBx4pJ2hRxyPlpySfH1K86PMVQ8olshc-Vk6RofixYqG72aNKF_k6RpVQeqgfU8apLX5MuUW_3TKmHKKf_GZM8aWt_WPKXvpg07hSTWEt40oEFbWNK6XUVPWj0kzPvz2hGKhpalJpJs-gKWUWPbt7SplPH-6apqojd5WiGqUzFxVVE-WsVal20doilWo9DZeoVBN0u1aluvd_XSpVN92eIVQdVOV-Udjp7_o4kZYWJw5ejBM2ulmuF9105pBeNNECbbyIIc9l8WIWnQtKEFdo6WiCsNApq1E0knGlUSST396XRDAV5ZpEKe3aaRK_pjM1JvElHfvYJOpp-6cmsZtiKhKFmY4vMouPaWG6WcTRgyyzGKRV283iZ5R73iwKyNptFqvJHpMkTtH1UYv4nsqzraKChm9ahfjWKlrVyeJbKvBYIQrJuaZSDpF6X6UMpedoGekaK2UkrW2skhkUM1wl42nevmoZRdbUGrmaLl-yyVY6fccmz9E3bpv8N1myamUqFW-tlWXkX14rdbSus1ZuJHG6TnpSQEq9nEf_KaqXD8nv83oZTDH7j8t4utt_XLroIU13HZeBtJDqgu3yIxpdZZceKXY5mG6XY1TWe0L-nv7Ud0JWk9-SBhlM6Ssb5GYypzTIVbSgoEHGUtvbDfIWWcpOylQ6nOGQNZTypkOuo56dfdJNYY4-GUHdaqccofx2p3yX_mDol0epoblffkL7X3XJ9-nQYZespP11LllBeze45QHy6_JEMOlmeiGSJs96AY1euPa1F-5Tsr830inxM2-8QtEXvPEiZVzyRja9UOkDI52vm4mv6P6ZZ-Ckg5FqHCFHihrnaZ1DjY2UpvVFOt1Z6otOurzZF6309N1ZUNMX0zW4SmEqDWJpfYoGGVS4W4P36J09GpSQpUSDVLp_RYMhki0aaEhHy6iEKujCDQ1aSbdyNpbRD9Wz0UMZd2Yjmzqy_dBH96b80E2lW_zxAb3u8EcuhbT48_THK9UB2EATNQEQtgBIRwA05OUfiCCKKwuEidLGApFOz_5uDubTnJNzMc09F0-R46_B-IyWeoTAQKlvhOBYYwjq6WvbPFyn9oF5eEDDEVpMUPhbWkRRfokWv6LgUi2eo6FKLZ6QZlKLIPpIH4pPaSIhFMIQip4boXDT9ob5aCM3jVLJz8NQTtmvhiGf3oUOB-gNbx3yKHaxDgmUUaNDNvV16_CI2n3C8YDangnHLcqcFY5tFKoJxyLyOBkHH5parIfPEj0OpehRSUemxcNGIRXx0FHTfAOa6aLNgBtUVmvAYXoyZYBq2nKIJcvhSUcuLoeNohYY8QIVmYwopRV_NmINFbQYUUibrxqRRUF9Riygd_xeQjm9v9WEDym8wIQoeuI0QdVvwi9HTMihrvWJcNGVgURcpay9ZmynYrcZBylPnYQ99ENhEnroaG0SamnichLEP5NweocF52jjSQu2UKDDAi39LcKKLynXbkUB-bZbMYcWhSQjjvaUdaCYmld3ooXWrunEenpzvBM7aaqwGx5F3djQ3I3XqKv2AVyU6NmLl-lsey8u0Hf7-tBL2_r78BbFqp1IoLACJyLoO0M_eqnrbD9cdKy5H_U0HunCjCgXijNdKKPp8QOYQV984sYVuvaLQdym63mD-J7yJgdRTHb9I5yinrQhuOnawSF00OPMYfyXuv7yGC5alzyCLXTk5RHY6KvUEdykAyvHcJR628YwTvcWT2CA1J5P_bH1yb8w8x_f_FilChTmjNdztHMzX8vakZOXH7Ftc2b-jrycTdGR0bGR0VFLIyKjN-XG_A-ATgE1&build-label=editors.maestro_20260217.02_p5&is-cached-offline=false\""
+                },
+                {
+                  "key": "Document-Policy",
+                  "value": "include-js-call-stacks-in-crash-reports"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "frame-ancestors 'self'"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Server",
+                  "value": "GSE"
+                },
+                {
+                  "key": "Alt-Svc",
+                  "value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2026-02-25T12:14:32.879Z",
+              "body": "{\n    \"ok\": true,\n    \"data\": {\n        \"user_id\": \"USER-123\",\n        \"course_id\": \"COURSE-001\",\n        \"session_id\": \"SESSION-001\",\n        \"status\": \"checked_in\",\n        \"last_ts\": \"2024-02-25T10:01:00.000Z\"\n    }\n}"
+            },
+            {
+              "id": "16540f2c-05f4-46fa-912e-8500818a9294",
+              "name": "invalid",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}?path=presence/status&user_id=USER-123&course_id=COURSE-001&session_id=SESSION-10000",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "path",
+                      "value": "presence/status",
+                      "uuid": "cc0c97b1-d2ef-4714-80be-7db66d28574b"
+                    },
+                    {
+                      "key": "user_id",
+                      "value": "USER-123",
+                      "uuid": "d8a223c4-d698-4300-93cc-f22f479f0fef"
+                    },
+                    {
+                      "key": "course_id",
+                      "value": "COURSE-001",
+                      "uuid": "e419e314-a2f2-4b5b-a496-3a16236d0705"
+                    },
+                    {
+                      "key": "session_id",
+                      "value": "SESSION-10000",
+                      "uuid": "21dad7ba-2890-45d4-b6f2-9f83446d371f"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                  "key": "Pragma",
+                  "value": "no-cache"
+                },
+                {
+                  "key": "Expires",
+                  "value": "Mon, 01 Jan 1990 00:00:00 GMT"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 25 Feb 2026 12:15:13 GMT"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "Reporting-Endpoints",
+                  "value": "default=\"/macros/web-reports?bl=editors.maestro_20260217.02_p5&context=eJwVzGtU1GUCB2D8z_v-yBZQB0cuheCgNGgSsAe0YBinYbhogmhZHF09HsKN0EAwRddawOQEa-y2FpzUlcsAzopNaheRSjfSdaXdA14qMzUWuQ_DoCAMKwv72w_P1-fxvlkJi-1KCg3dsitTdPjgA-UELel8oPya5DMjiid9vXJEuUTWwofKKTIUP1QS6U72uNJN3rZxJZjux7qUCWrXu5Sb9MetLqWSfvUHl-JN2wZdyj56f_OEUkMhrRNKGBW1Tyil1Fz9H6WFnnlrUjFQ8_SU0kIeAdPKXHpyz7SykD7c7aaqJ2e1ohqnMxcVVTPlrFOpdtO6IpVqA42WqFSTdKtOpbr7f90qVQ_dmilUnVTtfE5Y6avYGJGWFiMOXYwRFvqhPFb00JnKWNFMi7R6EUUey_ViLqWs0AtDvF6cC4gTV2jZeJxIpFNJRtFExlVGkUw--54XgVSUaxKltHuXSfyeztSaxLd07BOTaKAdn5vEHoqqiBdmOr7ELD6hxelmEUN9WWYxTKt3mMVLlHveLAooqccs1pA1KkGcouvjieJnKs9OEhU0-kOSED8miTZ1sviRCtxXikKyr62SI2TOqpKrSb2_SgbTU7ScdE1VMpzWNVXLDIoarZZ6WrC_RkZQUmqtXEOXL1lkG52-bZHn6F9Oi_yeErPqZCoVb6uTZeRbXid1tL6rTm4icbpeepBfSoNcQP8uapD3yefrBhlIUQeOSz3dGTwuHXSfZjiOS39aTPWBVvkxja-2SvcUqxxOt0oXlfWfkH-mjwZOyBryWdooA8mc0ihX06KCRhlN7W81ypuUWHZSptLhDJuspZQ3bHI99e4akE4KsQ3IMOpR2-UY5XfY5Tv0gWFQHqXGlkH5KR14xSHfo8rDDllFB-odsoL2bXTKg-TT7YFA0s32RDhNnfUEmjxx7TtP3KNkXy-kU_wXXniRIi944TnKuOSFbHq2ahaMdL5-Nv5O987MgZ0OhatxhGwpapyn9TY1NlGa1hvpdHuZN7ro8hZvtNHjd-ZCTd_M0OAqhag0iKYNKRpkUOEeDd6lt_dqUEKJJRqk0r0rGoyQbNVAQzpaTiVUQRduaNBGulXzsJx-qZmHXsq4PQ_Z1JntgwG6O-2DHird6ov36TWbL3IpqNWXpy9erPHDRpqs9YOw-EHa_KAhT19_BFBMmT9MlObyRzo9-acnsJDmnJwPN-d8PEa2zwLxBS1zD4KBzK8H4VhTEBroO8sCXKeOoQXoo9EwLSYp9E0tIii_RIvfUWCpFk_RSJUWj0gzpUUAfRwbjM9pMi4YwhCM3hvBcNKOxoVoJyeNU8nLISin7FdCkE_vQIeD9LqXDnkU_bQOcZRRq0M2DfTo8IA6ZoWij9rnhOImZc4NxXYK1oRiCbmfjMEsclsai9lUmRKLKjripoeFgir00FHzQgNa6KLFgBtUVmfAYXo0bYDKbQXE0hXwoCMXV8BCEYuMeJaKTEaU0sq_GLGWClqNKKQtV43IooABIxbR2z7Po5ze22bChxRaYEIEPbKboBo04bdjJuRQ94Z4OOjKUDyuUtY-M3ZQsdOMQ5SnTsBe-qUwAb10tC4BdTR5OQHiHwk4vTMR52jTyURsJX9bIrT0ZVgSvqVcaxIKyLsjCU_QkqBkxNDesk4UU8uaLrTSurVd2EBvTHRhF00X9sC9qAcbW3rwKnXX9cFB8R79eIHOdvTjAv20fwD9tH1wAG9StNqOOAopsCOMfjIMop-6zw7CQcdaBtFAE-EOzIxwoDjTgTKaoR_CTPrmUyeu0LXfDOMWXc8bxs-UNzWMYrLGPsAp6k0bgZOuHRpBJz3MHMV_qfuvD-Ggl5LHkElHXhiDhS6ljuF7OrjKhaPU3-7CBN19ehJDpPZ47Grbo39i9t8q7Y0qf2HOeC1HOz_z1aydOXn5Ydu3ZObvzMvZHBkeGR0eGbEsLDxyc27U_wBmHwG2&build-label=editors.maestro_20260217.02_p5&is-cached-offline=false\""
+                },
+                {
+                  "key": "Document-Policy",
+                  "value": "include-js-call-stacks-in-crash-reports"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "Content-Security-Policy",
+                  "value": "frame-ancestors 'self'"
+                },
+                {
+                  "key": "X-XSS-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Server",
+                  "value": "GSE"
+                },
+                {
+                  "key": "Alt-Svc",
+                  "value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2026-02-25T12:15:26.670Z",
+              "body": "{\n    \"ok\": true,\n    \"data\": {\n        \"user_id\": \"USER-123\",\n        \"course_id\": \"COURSE-001\",\n        \"session_id\": \"SESSION-10000\",\n        \"status\": \"not_checked_in\",\n        \"last_ts\": null\n    }\n}"
+            }
+          ]
+        }
+      ],
+      "id": "b7f49ebc-6718-4987-ad6c-a981acc8afff"
+    }
+  ],
+  "variable": [
+    {
+      "id": "244d8813-998a-471c-9cb8-6526233bb61c",
+      "key": "baseUrl",
+      "value": ""
+    }
+  ]
+}
