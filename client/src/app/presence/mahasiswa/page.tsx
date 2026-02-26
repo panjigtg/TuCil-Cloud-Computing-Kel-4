@@ -54,7 +54,7 @@ export default function MahasiswaLoginPage() {
           disabled={!userId.trim()}
           className="w-full py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-400 hover:to-teal-400 text-white shadow-lg shadow-cyan-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
         >
-          Lanjutkan $\rightarrow$
+          Lanjutkan
         </button>
       </form>
     </div>
