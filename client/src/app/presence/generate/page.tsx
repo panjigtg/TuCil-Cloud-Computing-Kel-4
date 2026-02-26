@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import QRCode from "qrcode";
 import { generateQrToken } from "@/lib/api-client";
 
@@ -27,13 +27,18 @@ export default function GenerateQrPage() {
     expiresAt: string;
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
-  const handleGenerate = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleGenerate = useCallback(async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!courseId || !sessionId) return;
+    
     setLoading(true);
     setError(null);
     setQrDataUrl(null);
-    setTokenInfo(null);
+    
+    // Don't clear tokenInfo here so the old QR stays visible 
+    // for a split second while refreshing
 
     const res = await generateQrToken({
       course_id: courseId,
@@ -52,21 +57,58 @@ export default function GenerateQrPage() {
       const dataUrl = await QRCode.toDataURL(qrPayload, {
         width: 300,
         margin: 2,
-        color: { dark: "#ffffff", light: "#00000000" },
+        color: { dark: "#000000", light: "#ffffff" },
       });
       setQrDataUrl(dataUrl);
       setTokenInfo({ token, expiresAt: res.data.expires_at });
     } else {
       setError(res.error || "Gagal generate QR token");
+      setTokenInfo(null);
+      setTimeLeft(null);
     }
 
     setLoading(false);
-  };
+  }, [courseId, sessionId]);
+
+  // Countdown and Auto-Refresh Effect
+  useEffect(() => {
+    if (!tokenInfo?.expiresAt) {
+      setTimeLeft(null);
+      return;
+    }
+
+    const calculateTimeLeft = () => {
+      const expireTime = new Date(tokenInfo.expiresAt).getTime();
+      const now = new Date().getTime();
+      const difference = Math.floor((expireTime - now) / 1000);
+      return Math.max(0, difference);
+    };
+
+    // Initial calculation
+    let currentLeft = calculateTimeLeft();
+    setTimeLeft(currentLeft);
+
+    const intervalId = setInterval(() => {
+      currentLeft = calculateTimeLeft();
+      setTimeLeft(currentLeft);
+      
+      // Auto refresh if time runs out and we aren't already loading
+      if (currentLeft <= 0) {
+        clearInterval(intervalId);
+        if (!loading) {
+          handleGenerate();
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [tokenInfo, handleGenerate, loading]);
 
   const selectedCourse = courses.find((c) => c.id === courseId);
+  const maxTime = 120; // TTL_SECONDS from backend
 
   return (
-    <div className="max-w-lg mx-auto">
+    <div className="max-w-lg mx-auto pb-12">
       {/* Form */}
       <form
         onSubmit={handleGenerate}
@@ -128,7 +170,7 @@ export default function GenerateQrPage() {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || !courseId || !sessionId}
           className="w-full mt-5 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-blue-500/20"
         >
           {loading ? (
@@ -159,7 +201,7 @@ export default function GenerateQrPage() {
 
       {/* Error */}
       {error && (
-        <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-5 text-center">
+        <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-5 text-center mb-6">
           <p className="text-3xl mb-2">❌</p>
           <p className="text-red-400 font-medium">{error}</p>
         </div>
@@ -168,31 +210,31 @@ export default function GenerateQrPage() {
       {/* QR Result */}
       {qrDataUrl && tokenInfo && (
         <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 text-center animate-in fade-in duration-500">
-          <p className="text-sm text-white/50 mb-4">
-            Tampilkan QR ini di kelas untuk mahasiswa scan
+          <p className="text-sm font-medium mb-1">
+            📱 Tampilkan QR ini di kelas
+          </p>
+          <p className="text-xs text-white/50 mb-6">
+            Otomatis diperbarui sebelum kedaluwarsa
           </p>
 
-          <div className="inline-block p-4 bg-white/5 rounded-2xl border border-white/10">
+          <div className="inline-block p-4 bg-white border-4 border-white/5 rounded-2xl shadow-xl shadow-cyan-500/10 mb-6">
             <img
               src={qrDataUrl}
               alt="QR Code"
-              className="w-64 h-64 mx-auto"
+              className={`w-64 h-64 mx-auto transition-opacity duration-300 ${loading ? 'opacity-30' : 'opacity-100'}`}
             />
           </div>
 
-          <div className="mt-4 space-y-1.5">
-            <p className="text-sm">
-              <span className="text-white/40">Token: </span>
-              <code className="text-blue-400 font-mono bg-blue-500/10 px-2 py-0.5 rounded">
+          <div className="space-y-4 max-w-xs mx-auto">
+
+
+            {/* Token Hash */}
+            <div className="bg-black/20 rounded-lg py-2 px-3 border border-white/5">
+              <p className="text-white/40 text-[11px] uppercase tracking-wider mb-1">Session Token Hash</p>
+              <code className="text-blue-400 font-mono text-xs">
                 {tokenInfo.token}
               </code>
-            </p>
-            <p className="text-sm">
-              <span className="text-white/40">Expires: </span>
-              <span className="text-amber-400">
-                {new Date(tokenInfo.expiresAt).toLocaleTimeString("id-ID")}
-              </span>
-            </p>
+            </div>
           </div>
         </div>
       )}
