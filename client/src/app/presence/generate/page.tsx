@@ -5,9 +5,9 @@ import QRCode from "qrcode";
 import { generateQrToken } from "@/lib/api-client";
 
 const courses = [
-  { id: "cloud-101", name: "Praktik Komputasi Awan" },
-  { id: "ai-201", name: "Kecerdasan Buatan" },
-  { id: "db-301", name: "Basis Data Lanjut" },
+  { id: "cloud-101", name: "Cloud Computing" },
+  { id: "ai-201", name: "Artificial Intelligence" },
+  { id: "db-301", name: "Database" },
 ];
 
 const sessions = [
@@ -32,11 +32,11 @@ export default function GenerateQrPage() {
   const handleGenerate = useCallback(async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!courseId || !sessionId) return;
-    
+
     setLoading(true);
     setError(null);
     setQrDataUrl(null);
-    
+
     // Don't clear tokenInfo here so the old QR stays visible 
     // for a split second while refreshing
 
@@ -91,7 +91,7 @@ export default function GenerateQrPage() {
     const intervalId = setInterval(() => {
       currentLeft = calculateTimeLeft();
       setTimeLeft(currentLeft);
-      
+
       // Auto refresh if time runs out and we aren't already loading
       if (currentLeft <= 0) {
         clearInterval(intervalId);
@@ -105,7 +105,7 @@ export default function GenerateQrPage() {
   }, [tokenInfo, handleGenerate, loading]);
 
   const selectedCourse = courses.find((c) => c.id === courseId);
-  const maxTime = 120; // TTL_SECONDS from backend
+  const maxTime = 30; // TTL_SECONDS from backend
 
   return (
     <div className="max-w-lg mx-auto pb-12">
@@ -227,6 +227,27 @@ export default function GenerateQrPage() {
 
           <div className="space-y-4 max-w-xs mx-auto">
 
+            {/* Countdown Timer */}
+            {timeLeft !== null && (
+              <div className={`rounded-xl border p-3 text-center transition-colors ${timeLeft <= 10
+                  ? "border-red-500/30 bg-red-500/10"
+                  : "border-white/10 bg-black/20"
+                }`}>
+                <p className="text-white/40 text-[11px] uppercase tracking-wider mb-1">QR Berubah dalam</p>
+                <p className={`font-mono text-2xl font-bold tabular-nums ${timeLeft <= 10 ? "text-red-400" : "text-cyan-400"
+                  }`}>
+                  {timeLeft}s
+                </p>
+                {/* Progress bar */}
+                <div className="mt-2 h-1 rounded-full bg-white/10 overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all ${timeLeft <= 10 ? "bg-red-400" : "bg-cyan-400"
+                      }`}
+                    style={{ width: `${(timeLeft / maxTime) * 100}%` }}
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Token Hash */}
             <div className="bg-black/20 rounded-lg py-2 px-3 border border-white/5">

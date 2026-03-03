@@ -9,7 +9,7 @@ const roles = [
     icon: "👨‍🏫",
     href: "/presence/generate",
     gradient: "from-blue-500 to-indigo-500",
-    features: ["Pilih mata kuliah & sesi", "Generate QR Token dinamis", "Tampilkan QR untuk mahasiswa scan"],
+    features: ["Pilih mata kuliah & sesi", "Generate QR Token dinamis", "Tampilkan QR untuk presensi mahasiswa"],
   },
   {
     role: "Mahasiswa",

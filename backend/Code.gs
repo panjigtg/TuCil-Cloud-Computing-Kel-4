@@ -3,7 +3,7 @@
 // ==========================================
 
 const SPREADSHEET_ID = "15_0lTfXBo03YmQ_dbDQi42uFfsgxm08ANL3J79rYgtE"; // Leave empty if bound to a spreadsheet, otherwise set ID
-const TTL_SECONDS = 120; // Token valid for 120 seconds
+const TTL_SECONDS = 30; // Token valid for 30 seconds
 
 function getDb() {
   return SPREADSHEET_ID ?
@@ -146,7 +146,7 @@ function handleCheckin(payload) {
 
   const tokensSheet = getSheet('tokens');
   const data = tokensSheet.getDataRange().getValues(); // [qr_token, course_id, session_id, created_at, expires_at, used]
-
+  
   let tokenRowIdx = -1;
   let tokenData = null;
 
@@ -160,10 +160,9 @@ function handleCheckin(payload) {
   }
 
   if (tokenRowIdx === -1) return sendError("token_invalid");
-
-  // Mematikan pengecekan token "used" karena 1 QR Code harus bisa discan se-kelas
-  // if (tokenData[5] === true) return sendError("token_already_used");
-
+  
+  // NOTE: Token intentionally NOT marked as used — allows multiple users to check-in with the same QR
+  
   const now = new Date();
 
   // tokenData[4] is now an integer/number (Unix Epoch MS)
@@ -171,11 +170,18 @@ function handleCheckin(payload) {
   const expiresAt = new Date(Number(tokenData[4]));
   if (now > expiresAt) return sendError("token_expired");
 
-  // Mematikan update status "used" 
-  // tokensSheet.getRange(tokenRowIdx + 1, 6).setValue(true);
-
-  // Save to presence sheet
+  // --- Dedup check: one presence entry per user per session ---
   const presenceSheet = getSheet('presence');
+  const presData = presenceSheet.getDataRange().getValues();
+  // presence_id(0), user_id(1), device_id(2), course_id(3), session_id(4), ...
+  for (let i = 1; i < presData.length; i++) {
+    if (presData[i][1] === user_id && presData[i][3] === course_id && presData[i][4] === session_id) {
+      // Already checked in — return existing presence_id
+      return sendSuccess({ presence_id: presData[i][0], status: "already_checked_in" });
+    }
+  }
+
+  // Save new presence record
   const presence_id = "PR-" + Utilities.getUuid().substring(0, 8).toUpperCase();
   // presence_id, user_id, device_id, course_id, session_id, qr_token, ts, recorded_at
   presenceSheet.appendRow([

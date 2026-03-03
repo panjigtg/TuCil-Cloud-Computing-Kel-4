@@ -5,6 +5,19 @@ import Link from "next/link";
 import { getPresenceStatus } from "@/lib/api-client";
 import type { StatusResponse } from "@/lib/types";
 
+const courses = [
+  { id: "cloud-101", name: "Cloud Computing" },
+  { id: "ai-201", name: "Artificial Intelligence" },
+  { id: "db-301", name: "Database" },
+];
+
+const sessions = [
+  { id: "sesi-01", name: "Sesi 1" },
+  { id: "sesi-02", name: "Sesi 2" },
+  { id: "sesi-03", name: "Sesi 3" },
+  { id: "sesi-04", name: "Sesi 4" },
+];
+
 export default function StatusPage() {
   const [userId, setUserId] = useState("");
   const [courseId, setCourseId] = useState("");
@@ -24,7 +37,7 @@ export default function StatusPage() {
   const handleCheck = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) return;
-    
+
     setLoading(true);
     setError(null);
     setStatusData(null);
@@ -57,7 +70,7 @@ export default function StatusPage() {
         <p className="text-3xl mb-3">⚠️</p>
         <h2 className="text-lg font-semibold text-amber-400 mb-2">NIM Belum Diisi</h2>
         <p className="text-sm text-amber-400/80 mb-6">Kamu harus login sebagai mahasiswa terlebih dahulu.</p>
-        <Link 
+        <Link
           href="/presence/mahasiswa"
           className="px-6 py-2.5 rounded-xl text-sm font-medium bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-400 hover:to-orange-400 transition-all shadow-lg shadow-amber-500/20"
         >
@@ -87,36 +100,38 @@ export default function StatusPage() {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm text-white/60 mb-1.5">
-              Course ID
-            </label>
-            <input
-              type="text"
+            <label className="block text-sm text-white/60 mb-1.5">Mata Kuliah</label>
+            <select
               value={courseId}
               onChange={(e) => setCourseId(e.target.value)}
-              placeholder="contoh: cloud-101"
               required
-              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all"
-            />
+              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all appearance-none cursor-pointer"
+            >
+              <option value="" disabled className="bg-gray-900 text-white/40">— Pilih Mata Kuliah —</option>
+              {courses.map((c) => (
+                <option key={c.id} value={c.id} className="bg-gray-900 text-white">{c.name}</option>
+              ))}
+            </select>
           </div>
           <div>
-            <label className="block text-sm text-white/60 mb-1.5">
-              Session ID
-            </label>
-            <input
-              type="text"
+            <label className="block text-sm text-white/60 mb-1.5">Sesi Pertemuan</label>
+            <select
               value={sessionId}
               onChange={(e) => setSessionId(e.target.value)}
-              placeholder="contoh: sesi-02"
               required
-              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all"
-            />
+              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all appearance-none cursor-pointer"
+            >
+              <option value="" disabled className="bg-gray-900 text-white/40">— Pilih Sesi —</option>
+              {sessions.map((s) => (
+                <option key={s.id} value={s.id} className="bg-gray-900 text-white">{s.name}</option>
+              ))}
+            </select>
           </div>
         </div>
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || !courseId || !sessionId}
           className="w-full mt-5 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-blue-500/20"
         >
           {loading ? (
@@ -156,20 +171,10 @@ export default function StatusPage() {
       {/* Status Result */}
       {statusData && (
         <div
-          className={`rounded-2xl border border-${statusColor}-500/20 bg-${statusColor}-500/5 p-6 animate-in fade-in duration-500`}
+          className="rounded-2xl p-6 animate-in fade-in duration-500"
           style={{
-            borderColor:
-              statusColor === "emerald"
-                ? "rgba(16,185,129,0.2)"
-                : statusColor === "red"
-                  ? "rgba(239,68,68,0.2)"
-                  : "rgba(245,158,11,0.2)",
-            backgroundColor:
-              statusColor === "emerald"
-                ? "rgba(16,185,129,0.05)"
-                : statusColor === "red"
-                  ? "rgba(239,68,68,0.05)"
-                  : "rgba(245,158,11,0.05)",
+            border: `1px solid ${statusColor === "emerald" ? "rgba(16,185,129,0.2)" : statusColor === "red" ? "rgba(239,68,68,0.2)" : "rgba(245,158,11,0.2)"}`,
+            backgroundColor: statusColor === "emerald" ? "rgba(16,185,129,0.05)" : statusColor === "red" ? "rgba(239,68,68,0.05)" : "rgba(245,158,11,0.05)",
           }}
         >
           <div className="text-center mb-4">
@@ -187,7 +192,7 @@ export default function StatusPage() {
                       : "#fbbf24",
               }}
             >
-              {statusData.status.replace("_", " ")}
+              {statusData.status.replace(/_/g, " ")}
             </p>
           </div>
 
@@ -209,7 +214,7 @@ export default function StatusPage() {
             <div className="bg-black/20 rounded-lg p-3">
               <p className="text-white/40 text-xs mb-0.5">Waktu</p>
               <p className="font-mono text-white/80">
-                {new Date(statusData.last_ts).toLocaleTimeString("id-ID")}
+                {statusData.last_ts ? new Date(statusData.last_ts).toLocaleTimeString("id-ID") : "—"}
               </p>
             </div>
           </div>

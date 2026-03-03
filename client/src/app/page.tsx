@@ -37,7 +37,7 @@ export default function Home() {
           Kelompok 4
         </h1>
         <p className="text-white/50 text-lg">
-          Praktik Komputasi Awan — Sistem Presensi & Telemetri Berbasis Cloud
+          Cloud Computing Praktikum — Sistem Presensi & Telemetri Berbasis Cloud
         </p>
       </div>
 
