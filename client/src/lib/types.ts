@@ -14,7 +14,13 @@ export interface ApiResponse<T> {
 export interface GenerateQrRequest {
   course_id: string;
   session_id: string;
+  session_date?: string;
   ts: string; // ISO-8601
+}
+
+export interface StopSessionRequest {
+  course_id: string;
+  session_id: string;
 }
 
 export interface GenerateQrResponse {
