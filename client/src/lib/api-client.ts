@@ -14,7 +14,6 @@ import type {
   GpsPolylineResponse,
 } from "./types";
 
-// Proxy through Next.js API route to avoid CORS issues with GAS
 const BASE_URL = "/api/gas";
 
 async function request<T>(
@@ -68,6 +67,20 @@ export async function getPresenceStatus(
   return request<StatusResponse>(`/presence/status?${params.toString()}`);
 }
 
+// ✅ UPDATED: Get attendance list with session_token filter
+export async function getAttendanceList(query: {
+  course_id: string;
+  session_id: string;
+  session_token?: string; // Changed from qr_token to session_token
+}): Promise<ApiResponse<AttendanceListResponse>> {
+  const params = new URLSearchParams({
+    course_id: query.course_id,
+    session_id: query.session_id,
+    ...(query.session_token && { session_token: query.session_token }),
+  });
+  return request<AttendanceListResponse>(`/presence/attendance/list?${params.toString()}`);
+}
+
 // --- Modul 3: GPS + Peta ---
 
 export async function postGpsLocation(
@@ -95,4 +108,17 @@ export async function getGpsPolyline(
     to: query.to,
   });
   return request<GpsPolylineResponse>(`/sensor/gps/polyline?${params.toString()}`);
+}
+
+// ✅ Type definitions untuk attendance
+export interface AttendanceRecord {
+  student_id: string;
+  student_name: string;
+  timestamp: string;
+  status?: string;
+}
+
+export interface AttendanceListResponse {
+  attendance: AttendanceRecord[];
+  total?: number;
 }
