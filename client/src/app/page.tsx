@@ -3,15 +3,17 @@ import Link from "next/link";
 const modules = [
   {
     title: "Presensi QR Dinamis",
-    description: "Scan QR code untuk presensi otomatis. Generate token, check-in, dan cek status.",
+    description:
+      "Scan QR code untuk presensi otomatis. Generate token, check-in, dan cek status.",
     icon: "📱",
-    href: "/presence/generate",
+    href: "/presence",
     gradient: "from-blue-500 to-cyan-500",
     available: true,
   },
   {
     title: "Accelerometer",
-    description: "Kirim data sensor accelerometer dari smartphone ke cloud secara periodik.",
+    description:
+      "Kirim data sensor accelerometer dari smartphone ke cloud secara periodik.",
     icon: "📊",
     href: "/telemetry/accel",
     gradient: "from-violet-500 to-purple-500",
@@ -19,7 +21,8 @@ const modules = [
   },
   {
     title: "GPS + Peta",
-    description: "Tracking lokasi GPS real-time dengan marker dan polyline di peta interaktif.",
+    description:
+      "Tracking lokasi GPS real-time dengan marker dan polyline di peta interaktif.",
     icon: "🗺️",
     href: "/gps/map",
     gradient: "from-emerald-500 to-teal-500",
@@ -55,7 +58,9 @@ export default function Home() {
             >
               {/* Gradient glow */}
               {mod.available && (
-                <div className={`absolute -inset-px rounded-2xl bg-gradient-to-r ${mod.gradient} opacity-0 group-hover:opacity-10 transition-opacity blur-xl`} />
+                <div
+                  className={`absolute -inset-px rounded-2xl bg-gradient-to-r ${mod.gradient} opacity-0 group-hover:opacity-10 transition-opacity blur-xl`}
+                />
               )}
 
               <div className="relative flex items-start gap-4">
@@ -73,7 +78,9 @@ export default function Home() {
                     {mod.description}
                   </p>
                   {mod.available && (
-                    <span className={`inline-block mt-3 text-sm font-medium bg-gradient-to-r ${mod.gradient} bg-clip-text text-transparent group-hover:opacity-100 opacity-70 transition-opacity`}>
+                    <span
+                      className={`inline-block mt-3 text-sm font-medium bg-gradient-to-r ${mod.gradient} bg-clip-text text-transparent group-hover:opacity-100 opacity-70 transition-opacity`}
+                    >
                       Buka Modul →
                     </span>
                   )}
