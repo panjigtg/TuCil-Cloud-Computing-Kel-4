@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 const navItems = [
   { label: "Home", href: "/", icon: "🏠" },
   { label: "Presensi", href: "/presence", matchPrefix: "/presence", icon: "📱" },
-  { label: "Accel", href: "#", matchPrefix: "/telemetry", icon: "📊", disabled: true },
+  { label: "Accel", href: "/telemetry/accel", matchPrefix: "/telemetry", icon: "📊" },
   { label: "GPS", href: "/gps/map", matchPrefix: "/gps", icon: "🗺️" },
 ];
 
@@ -20,20 +20,6 @@ export default function BottomNav() {
           const isActive = item.matchPrefix
             ? pathname.startsWith(item.matchPrefix)
             : pathname === item.href;
-
-          if (item.disabled) {
-            return (
-              <div
-                key={item.label}
-                className="flex flex-col items-center gap-0.5 py-2 px-3 opacity-30 cursor-not-allowed"
-              >
-                <span className="text-xl">{item.icon}</span>
-                <span className="text-[10px] font-medium text-white/40">
-                  {item.label}
-                </span>
-              </div>
-            );
-          }
 
           return (
             <Link

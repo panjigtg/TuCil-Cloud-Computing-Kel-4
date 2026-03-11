@@ -6,6 +6,10 @@ import type {
   CheckInResponse,
   StatusQuery,
   StatusResponse,
+  AccelBatchRequest,
+  AccelBatchResponse,
+  AccelLatestQuery,
+  AccelLatestResponse,
   GpsPostRequest,
   GpsPostResponse,
   GpsMarkerQuery,
@@ -66,6 +70,24 @@ export async function getPresenceStatus(
     )
   );
   return request<StatusResponse>(`/presence/status?${params.toString()}`);
+}
+
+// --- Modul 2: Accelerometer ---
+
+export async function postAccelBatch(
+  data: AccelBatchRequest
+): Promise<ApiResponse<AccelBatchResponse>> {
+  return request<AccelBatchResponse>("/telemetry/accel", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getAccelLatest(
+  query: AccelLatestQuery
+): Promise<ApiResponse<AccelLatestResponse>> {
+  const params = new URLSearchParams({ device_id: query.device_id });
+  return request<AccelLatestResponse>(`/telemetry/accel/latest?${params.toString()}`);
 }
 
 // --- Modul 3: GPS + Peta ---

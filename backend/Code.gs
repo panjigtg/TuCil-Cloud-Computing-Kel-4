@@ -47,6 +47,8 @@ function doGet(e) {
 
     if (path === "presence/status") {
       return handleGetStatus(e);
+    } else if (path === "telemetry/accel/latest") {
+      return handleGetAccelLatest(e);
     } else if (path === "sensor/gps/marker") {
       return handleGetGpsMarker(e);
     } else if (path === "sensor/gps/polyline") {
@@ -76,7 +78,7 @@ function doPost(e) {
       return handleGenerateQR(payload);
     } else if (path === "presence/checkin") {
       return handleCheckin(payload);
-    } else if (path === "sensor/accel/batch") {
+    } else if (path === "telemetry/accel") {
       return handleAccelBatch(payload);
     } else if (path === "sensor/gps") {
       return handlePostGps(payload);
@@ -236,21 +238,21 @@ function handleGetStatus(e) {
 // ==========================================
 
 function handleAccelBatch(payload) {
-  const { device_id, ts, data } = payload;
-  if (!device_id || !data || !Array.isArray(data)) return sendError("Invalid payload");
+  const { device_id, ts, samples } = payload;
+  if (!device_id || !samples || !Array.isArray(samples)) return sendError("Invalid payload");
 
   const sheet = getSheet('accel');
   const nowISO = new Date().toISOString();
 
   const rows = [];
-  data.forEach(item => {
-    // device_id, x, y, z, sample_ts, batch_ts, recorded_at
+  samples.forEach(item => {
+    // device_id, x, y, z, sample_t, batch_ts, recorded_at
     rows.push([
       device_id,
       item.x,
       item.y,
       item.z,
-      item.ts,
+      item.t,
       ts,
       nowISO
     ]);
@@ -262,7 +264,30 @@ function handleAccelBatch(payload) {
     sheet.getRange(lastRow + 1, 1, rows.length, rows[0].length).setValues(rows);
   }
 
-  return sendSuccess({ processed_records: rows.length });
+  return sendSuccess({ accepted: rows.length });
+}
+
+function handleGetAccelLatest(e) {
+  const { device_id } = e.parameter;
+  if (!device_id) return sendError("Missing device_id");
+
+  const sheet = getSheet('accel');
+  const data = sheet.getDataRange().getValues();
+
+  // Search backwards for the latest entry matching device_id
+  // Columns: device_id(0), x(1), y(2), z(3), sample_t(4), batch_ts(5), recorded_at(6)
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (data[i][0] === device_id) {
+      return sendSuccess({
+        t: data[i][4],
+        x: data[i][1],
+        y: data[i][2],
+        z: data[i][3]
+      });
+    }
+  }
+
+  return sendError("No data found for device");
 }
 
 function handlePostGps(payload) {
