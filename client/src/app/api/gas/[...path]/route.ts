@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const GAS_BASE_URL = process.env.NEXT_PUBLIC_GAS_BASE_URL ?? "";
+const GAS_BASE_URL = process.env.NEXT_PUBLIC_GAS_BASE_URL2 ?? "";
 
 /**
  * GAS routing: query parameter `?path=presence/qr/generate`

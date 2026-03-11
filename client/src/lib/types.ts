@@ -14,7 +14,13 @@ export interface ApiResponse<T> {
 export interface GenerateQrRequest {
   course_id: string;
   session_id: string;
+  session_date?: string;
   ts: string; // ISO-8601
+}
+
+export interface StopSessionRequest {
+  course_id: string;
+  session_id: string;
 }
 
 export interface GenerateQrResponse {
@@ -48,6 +54,18 @@ export interface StatusResponse {
   session_id: string;
   status: string;
   last_ts: string; // ISO-8601
+}
+
+export interface AttendanceRecord {
+  student_id: string;
+  student_name: string;
+  timestamp: string;
+  status?: string;
+}
+
+export interface AttendanceListResponse {
+  attendance: AttendanceRecord[];
+  total?: number;
 }
 
 // --- Modul 3: GPS + Peta ---

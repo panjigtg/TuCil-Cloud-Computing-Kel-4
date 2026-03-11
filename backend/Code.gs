@@ -108,6 +108,8 @@ function handleGenerateQR(payload) {
     token,
     course_id,
     session_id,
+    now.getTime(),
+    expires.getTime(),
     now.getTime(),      // Use Unix Epoch MS format
     expires.getTime(),  // Use Unix Epoch MS format
     false
