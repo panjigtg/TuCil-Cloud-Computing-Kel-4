@@ -13,7 +13,7 @@ import {
 } from "recharts";
 import { postAccelBatch } from "@/lib/api-client";
 import { getDeviceId } from "@/lib/device-id";
-import type { AccelDataPoint } from "@/lib/types";
+import type { AccelSample } from "@/lib/types";
 
 // Maximum points to show on the graph to prevent performance issues
 const MAX_DATAPOINTS = 50;
@@ -21,12 +21,12 @@ const BATCH_SIZE = 50; // Sync to cloud after accumulating 50 records
 
 export default function AccelerometerPage() {
   const [isActive, setIsActive] = useState(false);
-  const [dataPoints, setDataPoints] = useState<AccelDataPoint[]>([]);
+  const [dataPoints, setDataPoints] = useState<AccelSample[]>([]);
   const [syncStatus, setSyncStatus] = useState<string>("Siap");
   const [deviceId, setDeviceId] = useState("");
   
   // Use a ref to accumulate unsynced records without triggering constant re-renders
-  const unsyncedData = useRef<AccelDataPoint[]>([]);
+  const unsyncedData = useRef<AccelSample[]>([]);
   
   // Use a ref for the latest state to be accessed inside the event listener
   const isActiveRef = useRef(isActive);
@@ -42,14 +42,16 @@ export default function AccelerometerPage() {
     if (!isActiveRef.current) return;
 
     const { accelerationIncludingGravity } = event;
-    if (!accelerationIncludingGravity) return;
+    // Android sometimes fires with nulls
+    const aX = accelerationIncludingGravity?.x ?? 0;
+    const aY = accelerationIncludingGravity?.y ?? 0;
+    const aZ = accelerationIncludingGravity?.z ?? 0;
 
-    // Use default values if any axis is null (e.g., poorly supported device)
-    const newPoint: AccelDataPoint = {
-      x: Number((accelerationIncludingGravity.x || 0).toFixed(2)),
-      y: Number((accelerationIncludingGravity.y || 0).toFixed(2)),
-      z: Number((accelerationIncludingGravity.z || 0).toFixed(2)),
-      ts: new Date().toISOString()
+    const newPoint: AccelSample = {
+      x: Number(aX.toFixed(2)),
+      y: Number(aY.toFixed(2)),
+      z: Number(aZ.toFixed(2)),
+      t: new Date().toISOString()
     };
 
     // Update Graph Data
@@ -82,22 +84,21 @@ export default function AccelerometerPage() {
     const res = await postAccelBatch({
       device_id: deviceId || getDeviceId(),
       ts: new Date().toISOString(),
-      data: currentBatch
+      samples: currentBatch
     });
 
-    if (res.ok) {
-      setSyncStatus(`Berhasil sinkron ${res.data?.processed_records || currentBatch.length} record`);
+    if (res.ok && res.data) {
+      setSyncStatus(`Berhasil sinkron ${res.data.accepted || currentBatch.length} record`);
       setTimeout(() => setSyncStatus("Menunggu batch berikutnya..."), 2000);
     } else {
       setSyncStatus(`Gagal: ${res.error}`);
-      // If failed, we might want to put them back or drop them. Dropping for simplicity here to avoid memory bloat.
     }
   };
 
   const toggleSensor = async () => {
     if (!isActive) {
       // Request permission for iOS devices
-      if (typeof (DeviceMotionEvent as any).requestPermission === 'function') {
+      if (typeof DeviceMotionEvent !== "undefined" && typeof (DeviceMotionEvent as any).requestPermission === 'function') {
         try {
           const permissionState = await (DeviceMotionEvent as any).requestPermission();
           if (permissionState === 'granted') {
@@ -113,9 +114,13 @@ export default function AccelerometerPage() {
         }
       } else {
         // Non-iOS or older devices
-        window.addEventListener('devicemotion', handleDeviceMotion);
-        setIsActive(true);
-        setSyncStatus("Merekam data...");
+        if (typeof DeviceMotionEvent !== "undefined") {
+          window.addEventListener('devicemotion', handleDeviceMotion);
+          setIsActive(true);
+          setSyncStatus("Merekam data...");
+        } else {
+          alert("Device Motion API tidak didukung di perangkat ini.");
+        }
       }
     } else {
       window.removeEventListener('devicemotion', handleDeviceMotion);
@@ -204,7 +209,7 @@ export default function AccelerometerPage() {
             <LineChart data={dataPoints}>
               <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
               <XAxis 
-                dataKey="ts" 
+                dataKey="t" 
                 tick={false} 
                 axisLine={{ stroke: '#ffffff20' }}
               />
@@ -212,7 +217,7 @@ export default function AccelerometerPage() {
                 domain={['auto', 'auto']} 
                 stroke="#ffffff40" 
                 tick={{fill: '#ffffff60', fontSize: 12}}
-                tickFormatter={(val) => val.toFixed(0)}
+                tickFormatter={(val: number) => val.toFixed(0)}
                 width={30}
               />
               <Tooltip 

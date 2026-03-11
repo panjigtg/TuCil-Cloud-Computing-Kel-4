@@ -6,14 +6,19 @@ import type {
   CheckInResponse,
   StatusQuery,
   StatusResponse,
+  AccelBatchRequest,
+  AccelBatchResponse,
+  AccelLatestQuery,
+  AccelLatestResponse,
   GpsPostRequest,
   GpsPostResponse,
   GpsMarkerQuery,
   GpsMarkerResponse,
   GpsPolylineQuery,
   GpsPolylineResponse,
-  AccelBatchRequest,
-  AccelBatchResponse,
+  AttendanceRecord,
+  AttendanceListResponse,
+  StopSessionRequest,
 } from "./types";
 
 const BASE_URL = "/api/gas";
@@ -83,15 +88,22 @@ export async function getAttendanceList(query: {
   return request<AttendanceListResponse>(`/presence/attendance/list?${params.toString()}`);
 }
 
-// --- Modul 2: Telemetry (Accelerometer) ---
+// --- Modul 2: Accelerometer ---
 
 export async function postAccelBatch(
   data: AccelBatchRequest
 ): Promise<ApiResponse<AccelBatchResponse>> {
-  return request<AccelBatchResponse>("/sensor/accel/batch", {
+  return request<AccelBatchResponse>("/telemetry/accel", {
     method: "POST",
     body: JSON.stringify(data),
   });
+}
+
+export async function getAccelLatest(
+  query: AccelLatestQuery
+): Promise<ApiResponse<AccelLatestResponse>> {
+  const params = new URLSearchParams({ device_id: query.device_id });
+  return request<AccelLatestResponse>(`/telemetry/accel/latest?${params.toString()}`);
 }
 
 // --- Modul 3: GPS + Peta ---
@@ -121,24 +133,6 @@ export async function getGpsPolyline(
     to: query.to,
   });
   return request<GpsPolylineResponse>(`/sensor/gps/polyline?${params.toString()}`);
-}
-
-// ✅ Type definitions untuk attendance
-export interface AttendanceRecord {
-  student_id: string;
-  student_name: string;
-  timestamp: string;
-  status?: string;
-}
-
-export interface AttendanceListResponse {
-  attendance: AttendanceRecord[];
-  total?: number;
-}
-
-export interface StopSessionRequest {
-  course_id: string;
-  session_id: string;
 }
 
 export async function stopSession(

@@ -17,7 +17,7 @@ const modules = [
     icon: "📊",
     href: "/telemetry/accel",
     gradient: "from-violet-500 to-purple-500",
-    available: false,
+    available: true,
   },
   {
     title: "GPS + Peta",

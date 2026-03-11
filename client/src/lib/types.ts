@@ -56,6 +56,18 @@ export interface StatusResponse {
   last_ts: string; // ISO-8601
 }
 
+export interface AttendanceRecord {
+  student_id: string;
+  student_name: string;
+  timestamp: string;
+  status?: string;
+}
+
+export interface AttendanceListResponse {
+  attendance: AttendanceRecord[];
+  total?: number;
+}
+
 // --- Modul 3: GPS + Peta ---
 
 export interface GpsPostRequest {
@@ -94,21 +106,32 @@ export interface GpsPolylineResponse {
   points: Array<{ lat: number; lng: number; ts: string }>;
 }
 
-// --- Modul 2: Telemetry (Accelerometer) ---
+// --- Modul 2: Accelerometer ---
 
-export interface AccelDataPoint {
+export interface AccelSample {
+  t: string; // ISO-8601
   x: number;
   y: number;
   z: number;
-  ts: string; // ISO-8601 at sample time
 }
 
 export interface AccelBatchRequest {
   device_id: string;
-  ts: string; // Batch submission timestamp
-  data: AccelDataPoint[];
+  ts: string; // ISO-8601
+  samples: AccelSample[];
 }
 
 export interface AccelBatchResponse {
-  processed_records: number;
+  accepted: number;
+}
+
+export interface AccelLatestQuery {
+  device_id: string;
+}
+
+export interface AccelLatestResponse {
+  t: string;
+  x: number;
+  y: number;
+  z: number;
 }
