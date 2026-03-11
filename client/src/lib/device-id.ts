@@ -10,7 +10,13 @@ export function getDeviceId(): string {
   const KEY = "gps_device_id";
   let id = localStorage.getItem(KEY);
   if (!id) {
-    id = "DEV-" + crypto.randomUUID().substring(0, 8).toUpperCase();
+    const uuid =
+      typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : "xxxxxxxx-xxxx".replace(/x/g, () =>
+            Math.floor(Math.random() * 16).toString(16)
+          );
+    id = "DEV-" + uuid.substring(0, 8).toUpperCase();
     localStorage.setItem(KEY, id);
   }
   return id;
