@@ -47,6 +47,8 @@ function doGet(e) {
 
     if (path === "presence/status") {
       return handleGetStatus(e);
+    } else if (path === "presence/attendance/list") {
+      return handleGetAttendanceList(e);
     } else if (path === "telemetry/accel/latest") {
       return handleGetAccelLatest(e);
     } else if (path === "sensor/gps/marker") {
@@ -78,6 +80,8 @@ function doPost(e) {
       return handleGenerateQR(payload);
     } else if (path === "presence/checkin") {
       return handleCheckin(payload);
+    } else if (path === "presence/session/stop") {
+      return handleStopSession(payload);
     } else if (path === "telemetry/accel") {
       return handleAccelBatch(payload);
     } else if (path === "sensor/gps") {
@@ -95,7 +99,7 @@ function doPost(e) {
 // ==========================================
 
 function handleGenerateQR(payload) {
-  const { course_id, session_id, ts } = payload;
+  const { course_id, session_id, session_date, ts } = payload;
   if (!course_id || !session_id) return sendError("Missing required parameters: course_id, session_id");
 
   const token = "TKN-" + Utilities.getUuid().substring(0, 6).toUpperCase();
@@ -103,16 +107,15 @@ function handleGenerateQR(payload) {
   const expires = new Date(now.getTime() + (TTL_SECONDS * 1000));
 
   const sheet = getSheet('tokens');
-  // qr_token, course_id, session_id, created_at, expires_at, used
+  // qr_token, course_id, session_id, created_at, expires_at, used, session_date
   sheet.appendRow([
     token,
     course_id,
     session_id,
     now.getTime(),
     expires.getTime(),
-    now.getTime(),      // Use Unix Epoch MS format
-    expires.getTime(),  // Use Unix Epoch MS format
-    false
+    false,
+    session_date || ""
   ]);
 
   return sendSuccess({ qr_token: token, expires_at: expires.toISOString() });
@@ -233,6 +236,46 @@ function handleGetStatus(e) {
       user_id, course_id, session_id, status: "not_checked_in", last_ts: null
     });
   }
+}
+
+function handleGetAttendanceList(e) {
+  const { course_id, session_id, session_token } = e.parameter;
+  if (!course_id || !session_id) return sendError("Missing course_id or session_id");
+
+  const presSheet = getSheet('presence');
+  const data = presSheet.getDataRange().getValues();
+
+  const attendance = [];
+  // presence_id(0), user_id(1), device_id(2), course_id(3), session_id(4), qr_token(5), ts(6), recorded_at(7)
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][3] === course_id && data[i][4] === session_id) {
+      attendance.push({
+        student_id: data[i][1],
+        student_name: data[i][1], // user_id as fallback name
+        timestamp: data[i][6],
+        status: "present"
+      });
+    }
+  }
+
+  return sendSuccess({ attendance: attendance, total: attendance.length });
+}
+
+function handleStopSession(payload) {
+  const { course_id, session_id } = payload;
+  if (!course_id || !session_id) return sendError("Missing course_id or session_id");
+
+  // Mark all tokens for this session as used
+  const tokensSheet = getSheet('tokens');
+  const data = tokensSheet.getDataRange().getValues();
+
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][1] === course_id && data[i][2] === session_id && data[i][5] === false) {
+      tokensSheet.getRange(i + 1, 6).setValue(true); // Mark used column
+    }
+  }
+
+  return sendSuccess({ status: "session_stopped" });
 }
 
 // ==========================================
