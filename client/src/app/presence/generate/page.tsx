@@ -104,11 +104,7 @@ export default function GenerateQrPage() {
 
     if (res.ok && res.data) {
       const token = res.data.qr_token;
-      const qrPayload = JSON.stringify({
-        qr_token: token,
-        course_id: courseId,
-        session_id: sessionId,
-      });
+      const qrPayload = token;
       const dataUrl = await QRCode.toDataURL(qrPayload, {
         width: 300,
         margin: 2,

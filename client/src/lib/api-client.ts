@@ -149,3 +149,52 @@ export async function stopSession(
     body: JSON.stringify(data),
   });
 }
+
+// --- Cross-GAS: Request ke GAS eksternal via proxy ---
+
+async function requestExternal<T>(
+  gasUrl: string,
+  path: string,
+  method: "GET" | "POST" = "POST",
+  payload?: Record<string, unknown>,
+  query?: Record<string, string>
+): Promise<ApiResponse<T>> {
+  try {
+    const res = await fetch("/api/gas-proxy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ gas_url: gasUrl, path, method, payload, query }),
+    });
+    const json = await res.json();
+    return json as ApiResponse<T>;
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : "Network error",
+    };
+  }
+}
+
+export async function checkInExternal(
+  gasUrl: string,
+  data: CheckInRequest
+): Promise<ApiResponse<CheckInResponse>> {
+  return requestExternal<CheckInResponse>(
+    gasUrl,
+    "presence/checkin",
+    "POST",
+    data as unknown as Record<string, unknown>
+  );
+}
+
+export async function generateQrTokenExternal(
+  gasUrl: string,
+  data: GenerateQrRequest
+): Promise<ApiResponse<GenerateQrResponse>> {
+  return requestExternal<GenerateQrResponse>(
+    gasUrl,
+    "presence/qr/generate",
+    "POST",
+    data as unknown as Record<string, unknown>
+  );
+}

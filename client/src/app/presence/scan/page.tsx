@@ -3,8 +3,9 @@
 import { useState, useCallback, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { checkIn } from "@/lib/api-client";
+import { checkIn, checkInExternal } from "@/lib/api-client";
 import { getDeviceId } from "@/lib/device-id";
+import { GAS_EXTERNAL_URL } from "@/lib/gas-config";
 
 // Dynamic import to avoid SSR issues with camera access
 const QrScanner = dynamic(() => import("@/components/qr-scanner"), {
@@ -17,13 +18,17 @@ const QrScanner = dynamic(() => import("@/components/qr-scanner"), {
 });
 
 type ScanState = "scanning" | "confirming" | "submitting" | "success" | "error";
+type GasTarget = "own" | "external";
 
 export default function ScanPage() {
   const [state, setState] = useState<ScanState>("scanning");
+  const [gasTarget, setGasTarget] = useState<GasTarget>("own");
+  const [externalGasUrlInput, setExternalGasUrlInput] = useState(GAS_EXTERNAL_URL);
   const [scannedData, setScannedData] = useState<{
     qr_token: string;
     course_id: string;
     session_id: string;
+    gas_url?: string;
   } | null>(null);
   const [userId, setUserId] = useState("");
   const [deviceId, setDeviceId] = useState("");
@@ -49,6 +54,10 @@ export default function ScanPage() {
       const data = JSON.parse(decodedText);
       if (data.qr_token) {
         setScannedData(data);
+        if (data.gas_url) {
+          setGasTarget("external");
+          setExternalGasUrlInput(data.gas_url);
+        }
         setState("confirming");
       }
     } catch {
@@ -68,14 +77,19 @@ export default function ScanPage() {
 
     setState("submitting");
 
-    const res = await checkIn({
+    const checkInData = {
       user_id: userId,
       device_id: deviceId,
       course_id: scannedData.course_id,
       session_id: scannedData.session_id,
       qr_token: scannedData.qr_token,
       ts: new Date().toISOString(),
-    });
+    };
+
+    const targetUrl = gasTarget === "external" ? externalGasUrlInput : null;
+    const res = targetUrl
+      ? await checkInExternal(targetUrl, checkInData)
+      : await checkIn(checkInData);
 
     if (res.ok && res.data) {
       setResult({
@@ -113,6 +127,49 @@ export default function ScanPage() {
 
   return (
     <div className="max-w-lg mx-auto">
+      {/* GAS Target Toggle */}
+      {state === "scanning" && (
+        <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+          <p className="text-xs text-white/40 uppercase tracking-wider mb-2.5 font-medium">
+            🎯 Target GAS Backend
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setGasTarget("own")}
+              className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                gasTarget === "own"
+                  ? "bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-cyan-400 border border-cyan-500/30 shadow-lg shadow-cyan-500/10"
+                  : "text-white/50 border border-white/10 hover:bg-white/5"
+              }`}
+            >
+              🏠 GAS Sendiri
+            </button>
+            <button
+              onClick={() => setGasTarget("external")}
+              className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                gasTarget === "external"
+                  ? "bg-gradient-to-r from-violet-500/20 to-pink-500/20 text-violet-400 border border-violet-500/30 shadow-lg shadow-violet-500/10"
+                  : "text-white/50 border border-white/10 hover:bg-white/5"
+              }`}
+            >
+              🌐 GAS Eksternal
+            </button>
+          </div>
+          {gasTarget === "external" && (
+            <div className="mt-3 p-2.5 bg-violet-500/5 border border-violet-500/10 rounded-lg">
+              <label className="text-[11px] text-white/40 uppercase tracking-wider mb-1 block">URL Tujuan GAS Eksternal</label>
+              <input
+                type="text"
+                value={externalGasUrlInput}
+                onChange={(e) => setExternalGasUrlInput(e.target.value)}
+                placeholder="https://script.google.com/macros/s/.../exec"
+                className="w-full bg-black/20 border border-white/10 rounded px-2 py-1.5 text-xs text-violet-400 font-mono focus:outline-none focus:border-violet-500/50"
+              />
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Scanning */}
       {state === "scanning" && (
         <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
@@ -135,6 +192,26 @@ export default function ScanPage() {
                 {scannedData.qr_token}
               </code>
             </p>
+          </div>
+
+          <div className={`mb-4 p-3 rounded-xl border text-sm ${
+            gasTarget === "external"
+              ? "border-violet-500/20 bg-violet-500/5"
+              : "border-cyan-500/20 bg-cyan-500/5"
+          }`}>
+            <div className="text-center">
+              <span className="text-white/40">Check-in ke: </span>
+              <span className={`font-medium ${
+                gasTarget === "external" ? "text-violet-400" : "text-cyan-400"
+              }`}>
+                {gasTarget === "external" ? "🌐 GAS Eksternal" : "🏠 GAS Sendiri"}
+              </span>
+            </div>
+            {gasTarget === "external" && externalGasUrlInput && (
+              <p className="text-[11px] text-violet-400/70 font-mono break-all text-center mt-1.5">
+                {externalGasUrlInput}
+              </p>
+            )}
           </div>
 
           <form onSubmit={handleCheckIn} className="space-y-4">
@@ -207,7 +284,9 @@ export default function ScanPage() {
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
             />
           </svg>
-          <p className="mt-4 text-white/60">Mengirim check-in...</p>
+          <p className="mt-4 text-white/60">
+            Mengirim check-in ke {gasTarget === "external" ? "GAS Eksternal" : "GAS Sendiri"}...
+          </p>
         </div>
       )}
 
@@ -219,6 +298,12 @@ export default function ScanPage() {
             Check-in Berhasil!
           </h2>
           <div className="space-y-1.5 text-sm mt-4">
+            <p>
+              <span className="text-white/40">Target: </span>
+              <span className="text-emerald-400 font-medium">
+                {gasTarget === "external" ? "🌐 GAS Eksternal" : "🏠 GAS Sendiri"}
+              </span>
+            </p>
             <p>
               <span className="text-white/40">Presence ID: </span>
               <code className="text-emerald-400 font-mono bg-emerald-500/10 px-2 py-0.5 rounded">
