@@ -96,7 +96,7 @@ function UserRecorderView({ onBack }: { onBack: () => void }) {
       x: Number((accelerationIncludingGravity.x || 0).toFixed(2)),
       y: Number((accelerationIncludingGravity.y || 0).toFixed(2)),
       z: Number((accelerationIncludingGravity.z || 0).toFixed(2)),
-      t: new Date().toISOString()
+      ts: new Date().toISOString()
     };
 
     setDataPoints(prev => {
@@ -124,7 +124,7 @@ function UserRecorderView({ onBack }: { onBack: () => void }) {
     });
 
     if (res.ok) {
-      setSyncStatus(`Sinkron ${res.data?.accepted || currentBatch.length} record`);
+      setSyncStatus(`Sinkron ${res.data?.processed_records || currentBatch.length} record`);
       setTimeout(() => setSyncStatus("Merekam data..."), 2000);
     } else {
       setSyncStatus(`Gagal: ${res.error}`);
@@ -227,9 +227,10 @@ function AdminView({ onBack }: { onBack: () => void }) {
     try {
       const res = await getAccelLatest({ device_id: targetDevice });
       
-      if (res.ok && res.data?.data) {
-        const payload = res.data.data;
+      if (res.ok && res.data) {
+        const payload = res.data;
         const newPoint: AccelDataPoint = {
+          ts: payload.t,
           t: payload.t,
           x: payload.x,
           y: payload.y,
@@ -237,8 +238,8 @@ function AdminView({ onBack }: { onBack: () => void }) {
         };
 
         setDataPoints(prev => {
-          // Hanya tambahkan jika timestamp berbeda dari yang terakhir (menghindari grafik berhenti menumpuk/duplikasi)
-          if (prev.length > 0 && prev[prev.length - 1].t === newPoint.t) {
+          // Hanya tambahkan jika timestamp berbeda dari yang terakhir (menghindari duplikasi)
+          if (prev.length > 0 && prev[prev.length - 1].ts === newPoint.ts) {
             return prev;
           }
           const newData = [...prev, newPoint];
@@ -362,7 +363,7 @@ function Chart({ dataPoints, emptyMessage }: { dataPoints: AccelDataPoint[], emp
       <LineChart data={dataPoints}>
         <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
         <XAxis 
-          dataKey="t" 
+          dataKey="ts" 
           tick={false} 
           axisLine={{ stroke: '#ffffff20' }}
         />

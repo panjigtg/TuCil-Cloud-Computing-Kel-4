@@ -12,23 +12,11 @@ import type {
   GpsMarkerResponse,
   GpsPolylineQuery,
   GpsPolylineResponse,
-  AccelDataPoint,
   AccelBatchRequest,
   AccelBatchResponse,
+  AccelLatestQuery,
+  AccelLatestResponse,
 } from "./types";
-
-export interface AccelLatestQuery {
-  device_id: string;
-}
-
-export interface AccelLatestResponse {
-  data: {
-    t: string;
-    x: number;
-    y: number;
-    z: number;
-  };
-}
 
 const BASE_URL = "/api/gas";
 
@@ -102,7 +90,7 @@ export async function getAttendanceList(query: {
 export async function postAccelBatch(
   data: AccelBatchRequest
 ): Promise<ApiResponse<AccelBatchResponse>> {
-  return request<AccelBatchResponse>("/sensor/accel/batch", {
+  return request<AccelBatchResponse>("/telemetry/accel", {
     method: "POST",
     body: JSON.stringify(data),
   });
@@ -120,7 +108,7 @@ export async function getAccelLatest(
 export async function postGpsLocation(
   data: GpsPostRequest
 ): Promise<ApiResponse<GpsPostResponse>> {
-  return request<GpsPostResponse>("/sensor/gps", {
+  return request<GpsPostResponse>("/telemetry/gps", {
     method: "POST",
     body: JSON.stringify(data),
   });
@@ -130,7 +118,7 @@ export async function getGpsMarker(
   query: GpsMarkerQuery
 ): Promise<ApiResponse<GpsMarkerResponse>> {
   const params = new URLSearchParams({ device_id: query.device_id });
-  return request<GpsMarkerResponse>(`/sensor/gps/marker?${params.toString()}`);
+  return request<GpsMarkerResponse>(`/telemetry/gps/latest?${params.toString()}`);
 }
 
 export async function getGpsPolyline(
@@ -138,10 +126,9 @@ export async function getGpsPolyline(
 ): Promise<ApiResponse<GpsPolylineResponse>> {
   const params = new URLSearchParams({
     device_id: query.device_id,
-    from: query.from,
-    to: query.to,
+    ...(query.limit !== undefined && { limit: String(query.limit) }),
   });
-  return request<GpsPolylineResponse>(`/sensor/gps/polyline?${params.toString()}`);
+  return request<GpsPolylineResponse>(`/telemetry/gps/history?${params.toString()}`);
 }
 
 // ✅ Type definitions untuk attendance

@@ -10,8 +10,7 @@ const MapView = dynamic(() => import("@/components/map-view"), { ssr: false });
 
 export default function GpsPolylinePage() {
   const [deviceId, setDeviceId] = useState("");
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  const [limit, setLimit] = useState("100");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<GpsPolylineResponse | null>(null);
   const [error, setError] = useState("");
@@ -19,22 +18,11 @@ export default function GpsPolylinePage() {
   useEffect(() => {
     const id = getDeviceId();
     setDeviceId(id);
-
-    // Default: today's range
-    const now = new Date();
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    setFrom(toLocalDatetime(startOfDay));
-    setTo(toLocalDatetime(now));
   }, []);
-
-  const toLocalDatetime = (d: Date) => {
-    const pad = (n: number) => String(n).padStart(2, "0");
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!deviceId.trim() || !from || !to) return;
+    if (!deviceId.trim()) return;
 
     setLoading(true);
     setError("");
@@ -42,15 +30,14 @@ export default function GpsPolylinePage() {
 
     const res = await getGpsPolyline({
       device_id: deviceId.trim(),
-      from: new Date(from).toISOString(),
-      to: new Date(to).toISOString(),
+      limit: limit ? parseInt(limit, 10) : undefined,
     });
 
     setLoading(false);
 
     if (res.ok && res.data) {
       if (res.data.points.length === 0) {
-        setError("Tidak ada data lokasi dalam rentang waktu ini");
+        setError("Tidak ada data lokasi untuk device ini");
       } else {
         setData(res.data);
       }
@@ -71,21 +58,18 @@ export default function GpsPolylinePage() {
             className="flex-1 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition font-mono text-sm"
           />
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="flex gap-2 items-center">
+          <label className="text-white/50 text-sm">Limit:</label>
           <input
-            type="datetime-local"
-            value={from}
-            onChange={(e) => setFrom(e.target.value)}
-            required
-            className="px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition [color-scheme:dark]"
+            type="number"
+            value={limit}
+            onChange={(e) => setLimit(e.target.value)}
+            placeholder="100"
+            min="1"
+            max="1000"
+            className="w-24 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition [color-scheme:dark]"
           />
-          <input
-            type="datetime-local"
-            value={to}
-            onChange={(e) => setTo(e.target.value)}
-            required
-            className="px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition [color-scheme:dark]"
-          />
+          <span className="text-white/30 text-xs">titik terakhir</span>
         </div>
         <button
           type="submit"

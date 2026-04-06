@@ -45,14 +45,14 @@ function doGet(e) {
   try {
     const path = (e.parameter && e.parameter.path) ? e.parameter.path : "ui";
 
-    if (path === "presence/status") {
+    if (path === "presence/status") { //sudah di test
       return handleGetStatus(e);
-    } else if (path === "sensor/gps/marker") {
+    } else if (path === "telemetry/gps/latest") { //sudah di test
       return handleGetGpsMarker(e);
-    } else if (path === "sensor/gps/polyline") {
+    } else if (path === "telemetry/gps/history") { //sudah di test
       return handleGetGpsPolyline(e);
     } else if (path === "telemetry/accel/latest") {
-      return handleAccelLatest(e);
+      return handleGetAccelLatest(e);
     } else if (path === "ui") {
       return HtmlService.createHtmlOutputFromFile('Index')
         .setTitle('Dashboard Presensi QR')
@@ -74,13 +74,13 @@ function doPost(e) {
       payload = JSON.parse(e.postData.contents);
     }
 
-    if (path === "presence/qr/generate") {
+    if (path === "presence/qr/generate") { // sudah di test
       return handleGenerateQR(payload);
-    } else if (path === "presence/checkin") {
+    } else if (path === "presence/checkin") { // sudah di test
       return handleCheckin(payload);
     } else if (path === "telemetry/accel") {
       return handleAccelBatch(payload);
-    } else if (path === "sensor/gps") {
+    } else if (path === "telemetry/gps") { // sudah di test
       return handlePostGps(payload);
     }
 
@@ -104,14 +104,13 @@ function handleGenerateQR(payload) {
 
   const sheet = getSheet('tokens');
   // qr_token, course_id, session_id, created_at, expires_at, used
+  // Format timestamps as ISO strings for spreadsheet compatibility
   sheet.appendRow([
     token,
     course_id,
     session_id,
-    now.getTime(),
-    expires.getTime(),
-    now.getTime(),      // Use Unix Epoch MS format
-    expires.getTime(),  // Use Unix Epoch MS format
+    now.toISOString(),
+    expires.toISOString(),
     false
   ]);
 
@@ -129,12 +128,13 @@ function processGenerateQR(payload) {
     const expires = new Date(now.getTime() + (TTL_SECONDS * 1000));
 
     const sheet = getSheet('tokens');
+    // Format timestamps as ISO strings for spreadsheet compatibility
     sheet.appendRow([
       token,
       course_id,
       session_id,
-      now.getTime(),
-      expires.getTime(),
+      now.toISOString(),
+      expires.toISOString(),
       false
     ]);
 
@@ -169,9 +169,8 @@ function handleCheckin(payload) {
   
   const now = new Date();
 
-  // tokenData[4] is now an integer/number (Unix Epoch MS)
-  // Ensure we format it correctly as a number if Sheets returns it as string representation of number
-  const expiresAt = new Date(Number(tokenData[4]));
+  // tokenData[4] is an ISO string timestamp
+  const expiresAt = new Date(tokenData[4]);
   if (now > expiresAt) return sendError("token_expired");
 
   // --- Dedup check: one presence entry per user per session ---
@@ -248,13 +247,13 @@ function handleAccelBatch(payload) {
 
   const rows = [];
   samples.forEach(item => {
-    // device_id, x, y, z, sample_ts (t), batch_ts, recorded_at
+    // device_id, x, y, z, sample_ts, batch_ts, recorded_at
     rows.push([
       device_id,
       item.x,
       item.y,
       item.z,
-      item.t,
+      item.ts,
       ts,
       nowISO
     ]);
@@ -266,23 +265,23 @@ function handleAccelBatch(payload) {
     sheet.getRange(lastRow + 1, 1, rows.length, rows[0].length).setValues(rows);
   }
 
-  return sendSuccess({ accepted: rows.length });
+  return sendSuccess({ processed_records: rows.length });
 }
 
-function handleAccelLatest(e) {
+function handleGetAccelLatest(e) {
   const { device_id } = e.parameter;
   if (!device_id) return sendError("Missing device_id");
 
   const sheet = getSheet('accel');
   const data = sheet.getDataRange().getValues();
-  
-  let latest = null;
 
-  // data structure: device_id(0), x(1), y(2), z(3), sample_ts [t] (4), batch_ts(5), recorded_at(6)
+  let accelData = null;
+  // search backwards for the latest
+  // columns: device_id(0), x(1), y(2), z(3), sample_ts(4), batch_ts(5), recorded_at(6)
   for (let i = data.length - 1; i >= 1; i--) {
     if (data[i][0] === device_id) {
-      latest = {
-        t: data[i][4],
+      accelData = {
+        t: data[i][4], // sample_ts
         x: data[i][1],
         y: data[i][2],
         z: data[i][3]
@@ -291,10 +290,10 @@ function handleAccelLatest(e) {
     }
   }
 
-  if (latest) {
-    return sendSuccess(latest);
+  if (accelData) {
+    return sendSuccess(accelData);
   } else {
-    return sendError("No data found for device");
+    return sendError("No accelerometer data found");
   }
 }
 
@@ -315,7 +314,7 @@ function handlePostGps(payload) {
     now
   ]);
 
-  return sendSuccess({ status: "recorded", ts: ts || now });
+  return sendSuccess({ accepted : true });
 }
 
 function handleGetGpsMarker(e) {
@@ -348,28 +347,28 @@ function handleGetGpsMarker(e) {
 }
 
 function handleGetGpsPolyline(e) {
-  const { device_id, from, to } = e.parameter;
-  if (!device_id || !from || !to) return sendError("Missing required parameters: device_id, from, to");
+  const { device_id, limit } = e.parameter;
+  if (!device_id) return sendError("Missing required parameter: device_id");
 
   const sheet = getSheet('gps');
   const data = sheet.getDataRange().getValues();
-
-  const fromDate = new Date(from);
-  const toDate = new Date(to);
+  
+  const maxRecords = limit ? parseInt(limit, 10) : 100; // default limit 100
   const path = [];
 
-  for (let i = 1; i < data.length; i++) {
+  // Iterate backwards to get the latest records first
+  for (let i = data.length - 1; i >= 1 && path.length < maxRecords; i--) {
     if (data[i][0] === device_id) {
-      const recordDate = new Date(data[i][5]); // ts
-      if (recordDate >= fromDate && recordDate <= toDate) {
-        path.push({
-          lat: data[i][1],
-          lng: data[i][2],
-          ts: data[i][5]
-        });
-      }
+      path.push({
+        lat: data[i][1],
+        lng: data[i][2],
+        ts: data[i][5]
+      });
     }
   }
+
+  // Reverse to maintain chronological order (oldest to newest)
+  path.reverse();
 
   return sendSuccess({ points: path });
 }

@@ -86,12 +86,24 @@ export interface GpsMarkerResponse {
 
 export interface GpsPolylineQuery {
   device_id: string;
-  from: string; // ISO-8601
-  to: string; // ISO-8601
+  limit?: number; // default 100
 }
 
 export interface GpsPolylineResponse {
   points: Array<{ lat: number; lng: number; ts: string }>;
+}
+
+// --- Telemetry: Accelerometer Latest ---
+
+export interface AccelLatestQuery {
+  device_id: string;
+}
+
+export interface AccelLatestResponse {
+  t: string; // ISO-8601 timestamp
+  x: number;
+  y: number;
+  z: number;
 }
 
 // --- Modul 2: Telemetry (Accelerometer) ---
@@ -100,15 +112,16 @@ export interface AccelDataPoint {
   x: number;
   y: number;
   z: number;
-  t: string; // ISO-8601 at sample time
+  ts: string; // ISO-8601 at sample time (used in batch POST)
+  t?: string; // Alternative field name (used in GET latest response)
 }
 
 export interface AccelBatchRequest {
   device_id: string;
   ts: string; // Batch submission timestamp
-  samples: AccelDataPoint[];
+  samples: AccelDataPoint[]; // Backend expects "samples" not "data"
 }
 
 export interface AccelBatchResponse {
-  accepted: number;
+  processed_records: number;
 }

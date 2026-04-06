@@ -134,17 +134,19 @@ export default function GenerateQrPage() {
     if (res.ok && res.data) {
       const token = res.data.qr_token;
       
-      let qrPayload;
+      // QR payload selalu berisi course_id dan session_id
+      const qrData: Record<string, string> = {
+        qr_token: token,
+        course_id: courseId,
+        session_id: sessionId,
+      };
+      
+      // Tambahkan gas_url jika menggunakan external GAS
       if (gasTarget === "external" && externalGasUrlInput) {
-        qrPayload = JSON.stringify({
-          qr_token: token,
-          course_id: courseId,
-          session_id: sessionId,
-          gas_url: externalGasUrlInput
-        });
-      } else {
-        qrPayload = token;
+        qrData.gas_url = externalGasUrlInput;
       }
+      
+      const qrPayload = JSON.stringify(qrData);
       
       const dataUrl = await QRCode.toDataURL(qrPayload, {
         width: 300,
